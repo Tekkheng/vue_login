@@ -96,6 +96,8 @@ const showInput = async ({ email, password }) => {
 // import { ref } from 'vue'
 
 import axios from 'axios'
+import Swal from 'sweetalert2'
+
 // import { useRouter } from 'vue-router'
 
 export default {
@@ -131,7 +133,14 @@ export default {
         const response = await axios.post(this.$apiURL + '/login', data)
         console.log(response.data.email)
         if (response.data.status === 200) {
-          alert('login success')
+          // alert('login success')
+          Swal.fire({
+            title: 'Success!',
+            text: 'Login Success!',
+            icon: 'success',
+            confirmButtonText: 'Cool',
+            timer: 1500
+          })
           // const userData = {
           //   nama: response.data.nama,
           //   email: response.data.email,
