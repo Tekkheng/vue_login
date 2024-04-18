@@ -141,12 +141,6 @@ export default {
             confirmButtonText: 'Cool',
             timer: 1500
           })
-          // const userData = {
-          //   nama: response.data.nama,
-          //   email: response.data.email,
-          //   token: response.data.token
-          // }
-          // console.log(userData)
 
           localStorage.setItem('user', btoa(JSON.stringify(response.data)))
           // localStorage.setItem('user', userData)
@@ -155,13 +149,11 @@ export default {
           this.$router.push('/dashboard')
           this.msg_error = ''
         } else {
-          alert('Login gagal. ' + response.data.message)
           this.msg_error = response.data.message
         }
         console.log(response.data)
       } catch (err) {
         console.error('Login gagal:', err)
-        alert('Login gagal. Silakan periksa kembali email dan kata sandi Anda.')
         this.msg_error = err
       }
     }
