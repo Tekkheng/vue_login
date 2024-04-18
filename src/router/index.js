@@ -6,7 +6,7 @@ import TesView from '../components/TesComponent.vue'
 
 import NotFound from '@/views/NotFound.vue'
 
-const isUserLoggedIn = true
+// const isUserLoggedIn = true
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,12 +28,18 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      meta: {
+        needsAuth: false
+      }
     },
     {
       path: '/about',
       name: 'about',
-      component: TesView
+      component: TesView,
+      meta: {
+        needsAuth: true
+      }
     },
     {
       path: '/:catchAll(.*)',
@@ -45,13 +51,20 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.meta.needsAuth) {
-    if (isUserLoggedIn) {
-      next()
+    if (localStorage.getItem('user') === null) {
+      next({ name: 'login' })
     } else {
-      next('/login')
+      next()
     }
   } else {
-    next()
+    if (to.name == 'login') {
+      if (localStorage.getItem('user') !== null) {
+        console.log('ke dashboard')
+        next({ name: 'dashboard' })
+      } else {
+        next()
+      }
+    }
   }
 })
 

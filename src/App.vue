@@ -1,10 +1,35 @@
-<script setup>
+<script>
 import { RouterView } from 'vue-router'
 // import HelloWorld from './components/HelloWorld.vue'
+export default {
+  mounted() {
+    this.initUser()
+  },
+  // bila ada perubahan di route nextTick ke trigger jika pindah halaman
+  watch: {
+    $route() {
+      this.$nextTick(this.initUser)
+    }
+  },
+  methods: {
+    initUser() {
+      if (localStorage.getItem('user') !== null) {
+        this.user = JSON.parse(atob(localStorage.getItem('user')))
+      }
+    }
+  },
+  data() {
+    return {
+      message_success_post: '',
+      user: null,
+      RouterView
+    }
+  }
+}
 </script>
 
 <template>
-  <RouterView />
+  <RouterView :message_success_post="message_success_post" />
 </template>
 
 <style scoped>

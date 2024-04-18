@@ -129,8 +129,20 @@ export default {
       this.message_password = ''
       try {
         const response = await axios.post(this.$apiURL + '/login', data)
+        console.log(response.data.email)
         if (response.data.status === 200) {
           alert('login success')
+          // const userData = {
+          //   nama: response.data.nama,
+          //   email: response.data.email,
+          //   token: response.data.token
+          // }
+          // console.log(userData)
+
+          localStorage.setItem('user', btoa(JSON.stringify(response.data)))
+          // localStorage.setItem('user', userData)
+          this.email = ''
+          this.password = ''
           this.$router.push('/dashboard')
           this.msg_error = ''
         } else {
@@ -172,7 +184,7 @@ export default {
           placeholder="Isi Email"
           v-model="email"
           required
-          :class="{ 'is-invalid': message_email.length > 0 }"
+          :class="[message_email.length > 0 ? 'is-invalid' : '']"
         />
         <div v-if="message_email.length > 0" class="invalid-feedback" v-html="message_email"></div>
       </div>
