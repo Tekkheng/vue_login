@@ -4,6 +4,9 @@ import Dashboard from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import TesView from '../components/TesComponent.vue'
 
+import DataView from '../views/data_crud/DataView.vue'
+// import AddView from '../views/data_crud/AddView.vue'
+
 import NotFound from '@/views/NotFound.vue'
 
 // const isUserLoggedIn = true
@@ -42,12 +45,55 @@ const router = createRouter({
       }
     },
     {
+      path: '/data',
+      name: 'data',
+      component: DataView,
+      meta: {
+        needsAuth: true
+      }
+    },
+    // {
+    //   path: '/data/add',
+    //   name: 'add',
+    //   component: AddView,
+    //   meta: {
+    //     needsAuth: true
+    //   }
+    // },
+    // {
+    //   path: '/data/edit',
+    //   name: 'edit',
+    //   component: AddView,
+    //   meta: {
+    //     needsAuth: true
+    //   }
+    // },
+    {
       path: '/:catchAll(.*)',
       name: '404Name',
       component: NotFound
     }
   ]
 })
+
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.needsAuth) {
+//     if (localStorage.getItem('user') === null) {
+//       next({ name: 'login' })
+//     } else {
+//       next()
+//     }
+//   } else {
+//     if (to.name == 'login') {
+//       if (localStorage.getItem('user') !== null) {
+//         console.log('ke dashboard')
+//         next({ name: 'dashboard' })
+//       } else {
+//         next()
+//       }
+//     }
+//   }
+// })
 
 router.beforeEach((to, from, next) => {
   if (to.meta.needsAuth) {

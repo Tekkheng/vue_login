@@ -4,6 +4,6 @@ import Dashboard from '../components/Dashboard_home.vue'
 
 <template>
   <main>
-    <Dashboard />
+    <Dashboard :user="$attrs.user" />
   </main>
 </template>

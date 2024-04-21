@@ -20,7 +20,6 @@ export default {
   },
   data() {
     return {
-      message_success_post: '',
       user: null,
       RouterView
     }
@@ -29,7 +28,8 @@ export default {
 </script>
 
 <template>
-  <RouterView :message_success_post="message_success_post" />
+  <RouterView :user="user" />
+  <!-- <RouterView /> -->
 </template>
 
 <style scoped>

@@ -1,43 +1,63 @@
-<!-- <script setup>
+<script setup>
 import axios from 'axios'
 import imageSrc from '@/assets/pt_rimba.png'
 import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
+import Swal from 'sweetalert2'
+
 const router = useRouter()
 
 const email = ref('')
 const password = ref('')
-const message_password = ref('')
 
-const showInput = async ({ email, password }) => {
-  // console.log({ email, password })
+const msg_password = ref('')
+const msg_email = ref('')
+const msg_err = ref('')
+
+const showInput = async () => {
   window.axios = axios
   window.axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 
-  if (!email || !password) {
-    alert('Email dan kata sandi harus diisi.')
-    message_password.value = 'Email dan kata sandi tidak boleh kosong!'
+  if (!email.value) {
+    msg_email.value = 'Email tidak boleh kosong!'
+    msg_err.value = ''
+    return
+  } else if (!password.value) {
+    msg_password.value = 'kata sandi tidak boleh kosong!'
     return
   }
   const data = {
-    email: email,
-    password: password
+    email: email.value,
+    password: password.value
   }
   try {
     const response = await axios.post('http://localhost:8000/api/login', data)
     if (response.data.status === 200) {
-      alert('login success')
-      router.push('/dashboard')
+      Swal.fire({
+        title: 'Success!',
+        text: 'Login Success!',
+        icon: 'success',
+        confirmButtonText: 'Okay',
+        timer: 1500
+      })
+      msg_password.value = ''
+      msg_email.value = ''
+      msg_err.value = ''
+
+      localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
+      setTimeout(() => {
+        router.push('/dashboard')
+      }, 2000)
     } else {
-      alert('Login gagal. ' + response.data.message)
-      message_password.value = 'Login gagal. ' + response.data.message
+      msg_err.value = 'Login gagal. ' + response.data.message
+      msg_password.value = ''
+      msg_email.value = ''
     }
     console.log(response.data)
   } catch (err) {
     console.error('Login gagal:', err)
-    ;(message_password.value = 'Login Failed'), err
-    alert('Login gagal. Silakan periksa kembali email dan kata sandi Anda.')
+    msg_err.value = 'Login gagal:' + err
   }
 }
 </script>
@@ -48,6 +68,7 @@ const showInput = async ({ email, password }) => {
       class="card mt-5 p-5 border border-gray p-5 rounded-2 shadow d-flex justify-content-center align-items-center"
       style="width: 350px"
     >
+      <div v-if="msg_err.length > 0" class="alert alert-danger text-center" v-html="msg_err"></div>
       <div class="d-flex flex-row">
         <h1 class="fs-5 fw-bold text-center">Form Login</h1>
         <img :src="imageSrc" class="mb-4" alt="" width="40" style="border: 0px solid transparent" />
@@ -55,7 +76,6 @@ const showInput = async ({ email, password }) => {
 
       <div class="mb-4">
         <label for="email" class="form-label">Email: </label>
-        <div v-if="message_password.length > 0" class="invalid-feedback" v-html="message_password"></div>
         <input
           type="email"
           id="email"
@@ -64,8 +84,9 @@ const showInput = async ({ email, password }) => {
           placeholder="isi Email"
           v-model="email"
           required
-          :class="[message_password.length > 0 ? 'is-invalid' : '']"
+          :class="[msg_email.length > 0 ? 'is-invalid' : '']"
         />
+        <div v-if="msg_email.length > 0" class="invalid-feedback" v-html="msg_email"></div>
       </div>
       <div class="mb-4">
         <label for="password" class="form-label">Password: </label>
@@ -77,28 +98,25 @@ const showInput = async ({ email, password }) => {
           placeholder="isi Password"
           v-model="password"
           required
+          :class="[msg_password.length > 0 ? 'is-invalid' : '']"
         />
+        <div v-if="msg_password.length > 0" class="invalid-feedback" v-html="msg_password"></div>
       </div>
       <button
         :disabled="!email && !password"
         class="btn btn-success btn-block w-100 mt-3"
         type="submit"
-        @click.prevent="showInput({ email, password })"
+        @click.prevent="showInput()"
       >
         Login
       </button>
     </div>
   </form>
-</template> -->
+</template>
 
-<script>
-// import imageSrc from '@/assets/pt_rimba.png'
-// import { ref } from 'vue'
-
+<!-- <script>
 import axios from 'axios'
 import Swal from 'sweetalert2'
-
-// import { useRouter } from 'vue-router'
 
 export default {
   data() {
@@ -106,13 +124,12 @@ export default {
       email: '',
       password: '',
       message_email: '',
-      message_password: '',
+      msg_password: '',
       msg_error: ''
     }
   },
   methods: {
     async submit() {
-      // console.log({ email, password })
       window.axios = axios
       window.axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
 
@@ -120,7 +137,7 @@ export default {
         this.message_email = 'Email tidak boleh kosong!'
         return
       } else if (!this.password) {
-        this.message_password = 'kata sandi tidak boleh kosong!'
+        this.msg_password = 'kata sandi tidak boleh kosong!'
         return
       }
       const data = {
@@ -128,12 +145,11 @@ export default {
         password: this.password
       }
       this.message_email = ''
-      this.message_password = ''
+      this.msg_password = ''
       try {
         const response = await axios.post(this.$apiURL + '/login', data)
         console.log(response.data.email)
         if (response.data.status === 200) {
-          // alert('login success')
           Swal.fire({
             title: 'Success!',
             text: 'Login Success!',
@@ -142,8 +158,7 @@ export default {
             timer: 1500
           })
 
-          localStorage.setItem('user', btoa(JSON.stringify(response.data)))
-          // localStorage.setItem('user', userData)
+          localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
           this.email = ''
           this.password = ''
           this.$router.push('/dashboard')
@@ -200,12 +215,12 @@ export default {
           placeholder="Isi Password"
           v-model="password"
           required
-          :class="{ 'is-invalid': message_password.length > 0 }"
+          :class="{ 'is-invalid': msg_password.length > 0 }"
         />
         <div
-          v-if="message_password.length > 0"
+          v-if="msg_password.length > 0"
           class="invalid-feedback"
-          v-html="message_password"
+          v-html="msg_password"
         ></div>
       </div>
 
@@ -219,4 +234,4 @@ export default {
       </button>
     </div>
   </form>
-</template>
+</template> -->
