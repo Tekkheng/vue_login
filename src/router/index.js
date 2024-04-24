@@ -2,11 +2,13 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Dashboard from '../views/HomeView.vue'
 
 import LoginView from '../views/LoginView.vue'
-import TesView from '../components/TesComponent.vue'
 
-import DataView from '../views/data_crud/DataView.vue'
+import TruckView from '../views/truck_crud/TruckView.vue'
 // import AddView from '../views/data_crud/AddView.vue'
 
+import ScheduleView from '@/views/ScheduleView.vue'
+import addSchedule from '@/views/addSchedule.vue'
+import editSchedule from '@/views/editSchedule.vue'
 import NotFound from '@/views/NotFound.vue'
 
 // const isUserLoggedIn = true
@@ -37,17 +39,33 @@ const router = createRouter({
       }
     },
     {
-      path: '/about',
-      name: 'about',
-      component: TesView,
+      path: '/schedules',
+      name: 'schedules',
+      component: ScheduleView,
       meta: {
         needsAuth: true
       }
     },
     {
-      path: '/data',
-      name: 'data',
-      component: DataView,
+      path: '/add_schedules',
+      name: 'add_schedules',
+      component: addSchedule,
+      meta: {
+        needsAuth: true
+      }
+    },
+    {
+      path: '/schedules/:id',
+      name: 'edit_schedules',
+      component: editSchedule,
+      meta: {
+        needsAuth: true
+      }
+    },
+    {
+      path: '/truck',
+      name: 'truck',
+      component: TruckView,
       meta: {
         needsAuth: true
       }

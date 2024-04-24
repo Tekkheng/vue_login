@@ -51,10 +51,10 @@ export default {
             <RouterLink :to="{ name: 'dashboard' }" class="nav-link">Home</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink :to="{ name: 'data' }" class="nav-link">Data</RouterLink>
+            <RouterLink :to="{ name: 'truck' }" class="nav-link">Truck</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink :to="{ name: 'about' }" class="nav-link">About</RouterLink>
+            <RouterLink :to="{ name: 'schedules' }" class="nav-link">Schedules</RouterLink>
           </li>
           <li class="nav-item">
             <RouterLink to="/" class="nav-link">Contact Us</RouterLink>

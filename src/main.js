@@ -9,7 +9,12 @@ import App from './App.vue'
 import router from './router'
 import PrimeVue from 'primevue/config'
 
-import store from '@/store/store'
+import 'primevue/resources/themes/bootstrap4-light-blue/theme.css' // Ganti dengan tema yang Anda inginkan
+import 'primevue/resources/primevue.min.css'
+import 'primeicons/primeicons.css'
+// import 'primevue/components/calendar/calendar.css'
+
+import store from '@/store/index'
 
 const app = createApp(App)
 app.use(createPinia())
