@@ -4,38 +4,40 @@ import imageSrc from '@/assets/pt_rimba.png'
 // import bamboo from '@/assets/bamboo.png'
 // import bg_bamboo from '@/assets/bg_bamboo.png'
 // import { RouterLink } from 'vue-router'
-import { ref } from 'vue'
+import { reactive } from 'vue'
 
 import { useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
 
 const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-
-const msg_password = ref('')
-const msg_email = ref('')
-const msg_err = ref('')
+const handleInput = reactive({
+  email: '',
+  password: '',
+  msg_password: '',
+  msg_email: '',
+  msg_err: ''
+})
 
 const showInput = async () => {
-  window.axios = axios
-  window.axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
-
-  if (!email.value) {
-    msg_email.value = 'Email tidak boleh kosong!'
-    msg_err.value = ''
+  // window.axios = axios
+  // window.axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
+  const { email, password } = handleInput
+  if (!email) {
+    handleInput.msg_email = 'Email tidak boleh kosong!'
+    handleInput.msg_err = ''
     return
-  } else if (!password.value) {
-    msg_password.value = 'kata sandi tidak boleh kosong!'
+  } else if (!password) {
+    handleInput.msg_password = 'kata sandi tidak boleh kosong!'
     return
   }
   const data = {
-    email: email.value,
-    password: password.value
+    email: email,
+    password: password
   }
   try {
     const response = await axios.post('login', data)
+    console.log(response.data.message)
     if (response.data.status === 200) {
       Swal.fire({
         title: 'Success!',
@@ -44,23 +46,28 @@ const showInput = async () => {
         confirmButtonText: 'Okay',
         timer: 1500
       })
-      msg_password.value = ''
-      msg_email.value = ''
-      msg_err.value = ''
+
+      Object.assign(handleInput, {
+        password: '',
+        email: '',
+        err: ''
+      })
 
       localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
       setTimeout(() => {
         router.push('/dashboard')
       }, 2000)
     } else {
-      msg_err.value = 'Login gagal. ' + response.data.message
-      msg_password.value = ''
-      msg_email.value = ''
+      Object.assign(handleInput, {
+        msg_err: 'Login gagal. ' + response.data.message,
+        msg_password: '',
+        msg_email: ''
+      })
     }
     console.log(response.data)
   } catch (err) {
     console.error('Login gagal:', err)
-    msg_err.value = 'Login gagal:' + err
+    handleInput.msg_err = 'Login gagal:' + err
   }
 }
 </script>
@@ -71,7 +78,11 @@ const showInput = async () => {
       class="card mt-5 p-5 border border-gray p-5 rounded-2 shadow d-flex justify-content-center align-items-center"
       style="width: 350px"
     >
-      <div v-if="msg_err.length > 0" class="alert alert-danger text-center" v-html="msg_err"></div>
+      <div
+        v-if="handleInput.msg_err.length > 0"
+        class="alert alert-danger text-center"
+        v-html="handleInput.msg_err"
+      ></div>
       <div class="d-flex flex-row">
         <h1 class="fs-5 fw-bold text-center">Form Login</h1>
         <img :src="imageSrc" class="mb-4" alt="" width="40" style="border: 0px solid transparent" />
@@ -85,11 +96,15 @@ const showInput = async () => {
           name="email"
           class="form-control"
           placeholder="isi Email"
-          v-model="email"
+          v-model="handleInput.email"
           required
-          :class="[msg_email.length > 0 ? 'is-invalid' : '']"
+          :class="[handleInput.msg_email.length > 0 ? 'is-invalid' : '']"
         />
-        <div v-if="msg_email.length > 0" class="invalid-feedback" v-html="msg_email"></div>
+        <div
+          v-if="handleInput.msg_email.length > 0"
+          class="invalid-feedback"
+          v-html="handleInput.msg_email"
+        ></div>
       </div>
       <div class="mb-4">
         <label for="password" class="form-label">Password: </label>
@@ -99,14 +114,18 @@ const showInput = async () => {
           name="password"
           class="form-control"
           placeholder="isi Password"
-          v-model="password"
+          v-model="handleInput.password"
           required
-          :class="[msg_password.length > 0 ? 'is-invalid' : '']"
+          :class="[handleInput.msg_password.length > 0 ? 'is-invalid' : '']"
         />
-        <div v-if="msg_password.length > 0" class="invalid-feedback" v-html="msg_password"></div>
+        <div
+          v-if="handleInput.msg_password.length > 0"
+          class="invalid-feedback"
+          v-html="handleInput.msg_password"
+        ></div>
       </div>
       <button
-        :disabled="!email && !password"
+        :disabled="!handleInput.email && !handleInput.password"
         class="btn btn-success btn-block w-100 mt-3"
         type="submit"
         @click.prevent="showInput()"

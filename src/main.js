@@ -29,6 +29,6 @@ app.use(store)
 // app.use(print)
 
 // apiurl from .env
-app.config.globalProperties.$apiURL = 'http://localhost:8000/api'
+// app.config.globalProperties.$apiURL = 'http://localhost:8000/api'
 
 app.mount('#app')
