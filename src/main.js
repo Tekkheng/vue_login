@@ -15,6 +15,9 @@ import 'primeicons/primeicons.css'
 // import 'primevue/components/calendar/calendar.css'
 
 import store from '@/store/index'
+import './axios'
+
+// import print from 'vue3-print-nb'
 
 const app = createApp(App)
 app.use(createPinia())
@@ -22,6 +25,8 @@ app.use(router)
 app.use(PrimeVue)
 
 app.use(store)
+
+// app.use(print)
 
 // apiurl from .env
 app.config.globalProperties.$apiURL = 'http://localhost:8000/api'

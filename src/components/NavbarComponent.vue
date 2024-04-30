@@ -12,7 +12,7 @@ export default {
   },
   methods: {
     async getUser() {
-      const response = await axios.get(this.$apiURL + '/profile', {
+      const response = await axios.get('profile', {
         headers: { Authorization: 'Bearer ' + JSON.parse(atob(localStorage.getItem('user'))) }
       })
       console.log(response.data.data)
@@ -21,7 +21,6 @@ export default {
     Logout() {
       localStorage.removeItem('user')
       this.$router.push({ name: 'login' })
-      // router.push({ name: 'login' })
     }
   },
   mounted() {
@@ -45,8 +44,9 @@ export default {
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarHeader">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-center">
-          <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex flex-grow-1 justify-content-center"> -->
+        <ul
+          class="navbar-nav me-auto mb-2 mb-lg-0 d-flex justify-content-center align-items-center"
+        >
           <li class="nav-item">
             <RouterLink :to="{ name: 'dashboard' }" class="nav-link">Home</RouterLink>
           </li>
@@ -59,81 +59,36 @@ export default {
           <li class="nav-item">
             <RouterLink to="/" class="nav-link">Contact Us</RouterLink>
           </li>
-          <!-- <li>
-            <form class="d-flex">
-              <input
-                class="form-control me-2"
-                type="search"
-                placeholder="Search"
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-          </li> -->
         </ul>
-        <button class="d-flex flex-column" data-bs-toggle="dropdown">
-          <img
-            src="../assets/profile.png"
-            class="border border-light border-3 rounded-circle shadow bg-body rounded"
-            alt="profile"
-            width="45"
-          />
-          <h6 class="text-center w-100" v-if="userData !== null">{{ userData.nama }}</h6>
-          <h6 class="text-center w-100" v-if="userData === null">Load</h6>
-        </button>
-        <ul class="dropdown-menu position-absolute">
-          <li>
-            <button class="dropdown-item" @click.prevent="Logout()">
-              <span class="pe-1"><i class="pi pi-sign-out"></i> </span>Logout
-            </button>
-          </li>
-        </ul>
+
+        <div class="dropdown me-auto d-flex justify-content-center align-items-center">
+          <button
+            class="text-dark"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="../assets/profile.png"
+              class="border border-light border-3 rounded-circle shadow bg-body rounded"
+              alt="profile"
+              width="45"
+            />
+            <h6 class="text-center w-100" v-if="userData !== null">{{ userData.nama }}</h6>
+            <h6 class="text-center w-100" v-if="userData === null">Load</h6>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <button class="dropdown-item" @click.prevent="Logout()">
+                <span class="pe-1"><i class="pi pi-sign-out"></i> </span>Logout
+              </button>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
-
-  <!-- <nav class="navbar bg bg-info d-flex flex-row justify-content-around align-items-center">
-    <div class="brand bg bg-danger text-success align-items-center">
-      <span class="fs-2">R</span>imba
-    </div>
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarHeader"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarHeader">
-      <ul class="d-flex bg bg-primary align-items-center">
-        <li class="nav-link"><RouterLink to="/" class="nav-link">Home</RouterLink></li>
-        <li class="nav-link"><RouterLink to="/" class="nav-link">Data</RouterLink></li>
-        <li class="nav-link"><RouterLink to="/" class="nav-link">About</RouterLink></li>
-        <li class="nav-link"><RouterLink to="/" class="nav-link">Contact Us</RouterLink></li>
-        <li class="nav-link">
-          <form class="d-flex">
-            <input
-              class="form-control me-2"
-              type="search"
-              placeholder="Search"
-              aria-label="Search"
-            />
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-        </li>
-      </ul>
-
-      <button class="d-flex flex-column" @click.prevent="alertt()">
-        <img
-          src="../assets/profile.png"
-          class="border border-light border-3 rounded-circle shadow bg-body rounded"
-          alt="profile"
-          width="45"
-        />
-        <h6 class="text-center w-100">{{ userData.nama }}</h6>
-      </button>
-    </div>
-  </nav> -->
 </template>
 
 <style scoped>

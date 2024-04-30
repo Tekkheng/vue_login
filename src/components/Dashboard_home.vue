@@ -14,7 +14,7 @@ export default {
   },
   methods: {
     async getUser() {
-      const response = await axios.get(this.$apiURL + '/profile', {
+      const response = await axios.get('profile', {
         headers: { Authorization: `Bearer ${this.$attrs.user}` }
       })
       console.log(response.data.data)

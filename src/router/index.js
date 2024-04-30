@@ -10,8 +10,12 @@ import ScheduleView from '@/views/ScheduleView.vue'
 import addSchedule from '@/views/addSchedule.vue'
 import editSchedule from '@/views/editSchedule.vue'
 import NotFound from '@/views/NotFound.vue'
+import { defineProps } from 'vue'
 
 // const isUserLoggedIn = true
+
+const user = defineProps('users')
+console.log(user)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -70,22 +74,6 @@ const router = createRouter({
         needsAuth: true
       }
     },
-    // {
-    //   path: '/data/add',
-    //   name: 'add',
-    //   component: AddView,
-    //   meta: {
-    //     needsAuth: true
-    //   }
-    // },
-    // {
-    //   path: '/data/edit',
-    //   name: 'edit',
-    //   component: AddView,
-    //   meta: {
-    //     needsAuth: true
-    //   }
-    // },
     {
       path: '/:catchAll(.*)',
       name: '404Name',
@@ -113,6 +101,9 @@ const router = createRouter({
 //   }
 // })
 
+// if(user !== null){
+
+// }
 router.beforeEach((to, from, next) => {
   if (to.meta.needsAuth) {
     if (localStorage.getItem('user') === null) {

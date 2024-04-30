@@ -1,6 +1,9 @@
 <script setup>
 import axios from 'axios'
 import imageSrc from '@/assets/pt_rimba.png'
+// import bamboo from '@/assets/bamboo.png'
+// import bg_bamboo from '@/assets/bg_bamboo.png'
+// import { RouterLink } from 'vue-router'
 import { ref } from 'vue'
 
 import { useRouter } from 'vue-router'
@@ -32,7 +35,7 @@ const showInput = async () => {
     password: password.value
   }
   try {
-    const response = await axios.post('http://localhost:8000/api/login', data)
+    const response = await axios.post('login', data)
     if (response.data.status === 200) {
       Swal.fire({
         title: 'Success!',
@@ -63,7 +66,7 @@ const showInput = async () => {
 </script>
 
 <template>
-  <form class="rounded d-flex justify-content-center align-items-center" style="height: 100vh">
+  <form class="d-flex justify-content-center align-items-center" style="height: 100vh">
     <div
       class="card mt-5 p-5 border border-gray p-5 rounded-2 shadow d-flex justify-content-center align-items-center"
       style="width: 350px"
@@ -112,9 +115,50 @@ const showInput = async () => {
       </button>
     </div>
   </form>
-</template>
 
-<!-- <script>
+  <!-- <form action="">
+    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
+      <div class="row w-100">
+        <div class="col-md-6">
+          <img :src="bg_bamboo" alt="gambar rimba" width="100%" />
+        </div>
+        <div class="col-md-6 p-5">
+          <div class="card bg bg-transparent border border-light align-items-center p-5">
+            <img :src="bamboo" alt="gambar rimba" width="150px" />
+            <div class="mb-4 p-2 d-block w-100 form-control">
+              <input
+                type="text"
+                placeholder="Name"
+                class="form-control border border-light"
+                id="name"
+              />
+              <br />
+              <div class="d-flex">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  class="form-control border border-light"
+                  id="password"
+                />
+                <button class="btn btn-transparent">*</button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <RouterLink :to="{ name: 'dashboard' }" class="nav-link text-warning"
+                >Forget Password?</RouterLink
+              >
+            </div>
+            <button class="btn btn-warning d-block w-100 text-light" @click.prevent="showInput">
+              Login
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</template> -->
+
+  <!-- <script>
 import axios from 'axios'
 import Swal from 'sweetalert2'
 
@@ -235,3 +279,4 @@ export default {
     </div>
   </form>
 </template> -->
+</template>
