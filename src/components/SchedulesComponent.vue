@@ -1,8 +1,8 @@
 <script setup>
 import NavbarComponent from '@/components/NavbarComponent.vue'
-import TruckStore from '@/store'
+import { useScheduleStore } from '@/stores/scheduleStore'
 import axios from 'axios'
-import { computed, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 
 // import print from 'vue3-print-nb'
@@ -10,8 +10,6 @@ import { RouterLink } from 'vue-router'
 // {
 //   print
 // }
-
-const truckSchedule = computed(() => TruckStore.state.schedules)
 
 // const dataPrint = ref({})
 // const isPrint = ref(false)
@@ -26,6 +24,7 @@ const truckSchedule = computed(() => TruckStore.state.schedules)
 //   }, 10)
 // }
 
+const schedulesStore = useScheduleStore()
 const printData = async (id) => {
   try {
     const response = await axios({
@@ -59,11 +58,11 @@ const printData = async (id) => {
 }
 
 const removedItem = (noItem) => {
-  TruckStore.dispatch('deleteItemSchedule', noItem)
+  schedulesStore.deleteItemSchedule(noItem)
 }
 
-onMounted(() => {
-  TruckStore.dispatch('fetchItemsSchedule')
+onMounted(async () => {
+  await schedulesStore.fetchItemsSchedule()
 })
 </script>
 
@@ -87,15 +86,21 @@ onMounted(() => {
                 <tr class="text-center">
                   <th scope="col">No</th>
                   <th scope="col">Plat No</th>
+                  <th scope="col">Truck Tipe</th>
                   <th scope="col">Tanggal Berangkat</th>
                   <th scope="col">Tanggal Sampai</th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(item, index) in truckSchedule" :key="index" class="text-center">
+                <tr
+                  v-for="(item, index) in schedulesStore.schedule"
+                  :key="index"
+                  class="text-center"
+                >
                   <th scope="row">{{ item.id }}</th>
                   <td>{{ item.plat_no }}</td>
+                  <td>{{ item.tipe_truck }}</td>
                   <td>{{ item.tgl_berangkat }}</td>
                   <td>{{ item.tgl_sampai }}</td>
                   <td class="d-flex justify-content-center align-items-center">
@@ -103,7 +108,7 @@ onMounted(() => {
                       :to="{ name: 'edit_schedules', params: { id: item.id } }"
                       class="nav-link w-50"
                     >
-                      <button class="btn btn-outline-primary d-block">
+                      <button class="btn btn-outline-primary d-block me-2">
                         <i class="pi pi-pen-to-square"></i>
                       </button>
                     </RouterLink>

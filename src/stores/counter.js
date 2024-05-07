@@ -1,12 +1,27 @@
-import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 
-export const useCounterStore = defineStore('counter', () => {
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
+const useTesStore = defineStore('tesStore', {
+  state: () => ({
+    usersLog: [
+      { id: 1, title: 'buy some milk', isFav: false },
+      { id: 2, title: 'play ml', isFav: true }
+    ],
+    name: 'hai'
+  }),
+  getters: {
+    favorite: (state) => state.usersLog.filter((user) => user.isFav),
+    favCount: (state) =>
+      state.usersLog.reduce(
+        (currentValue, user) => (user.isFav ? currentValue + 1 : currentValue),
+        0
+      ),
+    totalCount: (state) => state.usersLog.length
+  },
+  actions: {
+    addUser(newUser) {
+      this.usersLog.push(newUser)
+    }
   }
-
-  return { count, doubleCount, increment }
 })
+
+export default useTesStore

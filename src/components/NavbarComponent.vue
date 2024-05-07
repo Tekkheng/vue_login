@@ -1,38 +1,34 @@
-<script>
+<script setup>
 import 'primeicons/primeicons.css'
 import { RouterLink } from 'vue-router'
-import axios from 'axios'
+import Swal from 'sweetalert2'
+import useAuthStore from '@/stores/authStore'
+import { computed, onMounted } from 'vue'
 
-export default {
-  data() {
-    return {
-      userData: null,
-      RouterLink
-    }
-  },
-  methods: {
-    async getUser() {
-      const response = await axios.get('profile', {
-        headers: { Authorization: 'Bearer ' + JSON.parse(atob(localStorage.getItem('user'))) }
-      })
-      console.log(response.data.data)
-      this.userData = response.data.data
-    },
-    Logout() {
-      localStorage.removeItem('user')
-      this.$router.push({ name: 'login' })
-    }
-  },
-  mounted() {
-    this.getUser()
+const authStore = useAuthStore()
+const userData = computed(() => authStore.userLoggedin)
+
+const Logout = async () => {
+  const msg = await authStore.Logout()
+  if (!msg) {
+    Swal.fire({
+      icon: 'success',
+      title: 'Logout Berhasil',
+      text: 'Anda telah berhasil logout!',
+      timer: 1500
+    })
   }
 }
+
+onMounted(() => {
+  authStore.fetchUser()
+})
 </script>
 
 <template>
   <nav class="navbar navbar-expand-lg bg-light mb-5 p-1">
     <div class="container-fluid d-flex justify-content-center">
-      <a class="navbar-brand text-success fw-bold flex-grow-1 text-center" href="#"
+      <a class="navbar-brand text-warning fw-bold flex-grow-1 text-center" href="#"
         ><span class="fs-2">R</span>imba</a
       >
       <button
@@ -57,7 +53,7 @@ export default {
             <RouterLink :to="{ name: 'schedules' }" class="nav-link">Schedules</RouterLink>
           </li>
           <li class="nav-item">
-            <RouterLink to="/" class="nav-link">Contact Us</RouterLink>
+            <RouterLink :to="{ name: 'calendarTruck' }" class="nav-link">Calendar Truck</RouterLink>
           </li>
         </ul>
 
@@ -101,17 +97,17 @@ button {
 }
 
 button.logout:hover {
-  color: green;
+  color: rgb(255, 179, 0);
 }
 
 .router-link-active {
-  color: rgb(23, 118, 84);
+  color: rgb(255, 179, 0);
 }
 
 a {
   color: black;
 }
 a:hover {
-  color: rgb(23, 118, 84);
+  color: rgb(255, 179, 0);
 }
 </style>

@@ -5,7 +5,7 @@ export const ADD_SCHEDULE = (state, newItem) => {
   state.schedules.push(newItem)
 }
 export const UPDATE_SCHEDULE = (state, updatedItem) => {
-  const index = state.schedules.findIndex((item) => item.id === updatedItem.no)
+  const index = state.schedules.findIndex((item) => item.id === updatedItem.id)
   if (index !== -1) {
     state.schedules.splice(index, 1, updatedItem)
   }

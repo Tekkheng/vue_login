@@ -1,46 +1,22 @@
 <script setup>
 import NavbarComponent from '@/components/NavbarComponent.vue'
-
-// import store
-import TruckStore from '@/store'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import Calendar from 'primevue/calendar'
-
+import useTruckStore from '@/stores/truckStore'
+import { useScheduleStore } from '@/stores/scheduleStore'
 // dapatin params id
 import { useRoute } from 'vue-router'
 const route = useRoute()
 const id = route.params.id
 
 // dapatin data store
-const truckItems = computed(() => TruckStore.state.items)
-const truckItemsSchedule = computed(() => TruckStore.state.schedules)
-// const truckItemsScheduleSchedule = computed(() => TruckStore.state.schedules)
+const truckStore = useTruckStore()
+const scheduleStore = useScheduleStore()
 
-let plat_no = ref('')
+const truck_type = ref('')
+const plat_no = ref('')
 let tgl_berangkat = ref('')
 let tgl_sampai = ref('')
-
-// set default value for plat_no,tgl_berangkat,tgl_sampai
-if (truckItemsSchedule.value && truckItemsSchedule.value.length > 0) {
-  //   plat_no.value = truckItemsSchedule.value[0].plat_no
-
-  //   for (let i in truckItemsSchedule.value) {
-  //     if (truckItemsSchedule.value[i].id == id) {
-  //       tgl_berangkat.value = truckItemsSchedule.value[i].tgl_berangkat
-  //       tgl_sampai.value = truckItemsSchedule.value[i].tgl_sampai
-  //     }
-  //   }
-
-  for (let item of truckItemsSchedule.value) {
-    if (item.id == id) {
-      plat_no.value = item.plat_no
-      tgl_berangkat.value = item.tgl_berangkat
-      tgl_sampai.value = item.tgl_sampai
-    }
-  }
-  //   console.log(tgl_berangkat.value)
-  //   console.log(tgl_sampai.value)
-}
 
 // set plat_no.value
 const saveSelectedPlatNo = (event) => {
@@ -58,34 +34,58 @@ const formatDate = (tgl) => {
 
 // editschedule
 const editNewItem = (idItem) => {
+  for (let truck of truckStore.truck) {
+    if (truck.plat_no === plat_no.value) {
+      truck_type.value = truck.truck_type.tipe_truck
+    }
+  }
   // date default yyyy-mm-dd tapi ketika di input menjadi objek
 
   // Ubah string tanggal menjadi objek Date, memastikan date selalu objek, sehingga ketika di formatDate aman
   const date_berangkat = new Date(tgl_berangkat.value)
   const date_sampai = new Date(tgl_sampai.value)
-  console.log(date_berangkat, date_sampai)
+  // console.log(date_berangkat, date_sampai)
 
   // format objek date jadi yyyy-mm-dd
   const frmt_tgl_berangkat = formatDate(date_berangkat)
   const frmt_tgl_sampai = formatDate(date_sampai)
 
-  console.log(frmt_tgl_berangkat, frmt_tgl_sampai)
+  // console.log(frmt_tgl_berangkat, frmt_tgl_sampai)
 
   const newData = {
     plat_no: plat_no.value,
     tgl_berangkat: frmt_tgl_berangkat,
-    tgl_sampai: frmt_tgl_sampai
+    tgl_sampai: frmt_tgl_sampai,
+    tipe_truck: truck_type.value
   }
-
-  TruckStore.dispatch('updateItemSchedule', { idItem, newEditData: newData })
-  //   TruckStore.dispatch('updateItemSchedule', { idItem, newData })
+  console.log(truck_type.value)
+  scheduleStore.updateItemSchedule({ idItem, newEditData: newData })
   plat_no.value = ''
   tgl_berangkat.value = ''
   tgl_sampai.value = ''
+  truck_type.value = ''
 }
 
-onMounted(() => {
-  TruckStore.dispatch('fetchItems')
+onMounted(async () => {
+  await scheduleStore.fetchItemsSchedule()
+  await truckStore.fetchItems()
+
+  // set default value for plat_no,tgl_berangkat,tgl_sampai
+  if (scheduleStore.schedule && scheduleStore.schedule.length > 0) {
+    //   for (let i in truckItemsSchedule.value) {
+    //     if (truckItemsSchedule.value[i].id == id) {
+    //       tgl_berangkat.value = truckItemsSchedule.value[i].tgl_berangkat
+    //       tgl_sampai.value = truckItemsSchedule.value[i].tgl_sampai
+    //     }
+    //   }
+    for (let schedule of scheduleStore.schedule) {
+      if (schedule.id == id) {
+        plat_no.value = schedule.plat_no
+        tgl_berangkat.value = schedule.tgl_berangkat
+        tgl_sampai.value = schedule.tgl_sampai
+      }
+    }
+  }
 })
 </script>
 
@@ -107,7 +107,7 @@ onMounted(() => {
                   v-model="plat_no"
                   @change="saveSelectedPlatNo"
                 >
-                  <option v-for="(item, index) in truckItems" :key="index">
+                  <option v-for="(item, index) in truckStore.truck" :key="index">
                     {{ item.plat_no }}
                   </option>
                 </select>

@@ -1,15 +1,14 @@
 <script setup>
-import axios from 'axios'
+// import axios from 'axios'
 import imageSrc from '@/assets/pt_rimba.png'
-// import bamboo from '@/assets/bamboo.png'
-// import bg_bamboo from '@/assets/bg_bamboo.png'
-// import { RouterLink } from 'vue-router'
 import { reactive } from 'vue'
-
-import { useRouter } from 'vue-router'
+import useAuthStore from '@/stores/authStore'
+import useTesStore from '@/stores/counter'
+// import { useRouter } from 'vue-router'
 import Swal from 'sweetalert2'
-
-const router = useRouter()
+// import userDetails from './userDetails.vue'
+// import addUser from './addUser.vue'
+// const router = useRouter()
 
 const handleInput = reactive({
   email: '',
@@ -19,9 +18,11 @@ const handleInput = reactive({
   msg_err: ''
 })
 
+const authStore = useAuthStore()
+const tesStore = useTesStore()
+console.log(tesStore.usersLog)
+
 const showInput = async () => {
-  // window.axios = axios
-  // window.axios.defaults.headers['Access-Control-Allow-Origin'] = '*'
   const { email, password } = handleInput
   if (!email) {
     handleInput.msg_email = 'Email tidak boleh kosong!'
@@ -29,47 +30,86 @@ const showInput = async () => {
     return
   } else if (!password) {
     handleInput.msg_password = 'kata sandi tidak boleh kosong!'
+    handleInput.msg_err = ''
     return
   }
   const data = {
     email: email,
     password: password
   }
-  try {
-    const response = await axios.post('login', data)
-    console.log(response.data.message)
-    if (response.data.status === 200) {
-      Swal.fire({
-        title: 'Success!',
-        text: 'Login Success!',
-        icon: 'success',
-        confirmButtonText: 'Okay',
-        timer: 1500
-      })
 
-      Object.assign(handleInput, {
-        password: '',
-        email: '',
-        err: ''
-      })
-
-      localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
-      setTimeout(() => {
-        router.push('/dashboard')
-      }, 2000)
-    } else {
-      Object.assign(handleInput, {
-        msg_err: 'Login gagal. ' + response.data.message,
-        msg_password: '',
-        msg_email: ''
-      })
-    }
-    console.log(response.data)
-  } catch (err) {
-    console.error('Login gagal:', err)
-    handleInput.msg_err = 'Login gagal:' + err
+  const error = await authStore.LoginUser(data)
+  if (error) {
+    handleInput.msg_err = error
+    handleInput.msg_email = ''
+    handleInput.msg_password = ''
+  } else {
+    Swal.fire({
+      icon: 'success',
+      title: 'Login Berhasil',
+      text: 'Anda telah berhasil login!',
+      timer: 1500
+    })
+    Object.assign(handleInput, {
+      password: '',
+      email: '',
+      msg_err: '',
+      msg_email: '',
+      msg_password: ''
+    })
   }
 }
+// const showInput = async () => {
+//   const { email, password } = handleInput
+//   if (!email) {
+//     handleInput.msg_email = 'Email tidak boleh kosong!'
+//     handleInput.msg_err = ''
+//     return
+//   } else if (!password) {
+//     handleInput.msg_password = 'kata sandi tidak boleh kosong!'
+//     return
+//   }
+//   const data = {
+//     email: email,
+//     password: password
+//   }
+//   try {
+//     const response = await axios.post('login', data)
+//     console.log(response.data.message)
+//     if (response.data.status === 200) {
+//       Swal.fire({
+//         title: 'Success!',
+//         text: 'Login Success!',
+//         icon: 'success',
+//         confirmButtonText: 'Okay',
+//         timer: 1500
+//       })
+
+//       Object.assign(handleInput, {
+//         password: '',
+//         email: '',
+//         err: ''
+//       })
+
+//       localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
+//       setTimeout(() => {
+//         router.push('/dashboard')
+//       }, 2000)
+//     } else {
+//       Object.assign(handleInput, {
+//         msg_err: 'Login gagal. ' + response.data.message,
+//         msg_password: '',
+//         msg_email: ''
+//       })
+//     }
+//     console.log(response.data)
+//   } catch (err) {
+//     console.error('Login gagal:', err)
+//     handleInput.msg_err = 'Login gagal:' + err
+//   }
+// }
+
+// let filterList = ref('all')
 </script>
 
 <template>
@@ -109,7 +149,7 @@ const showInput = async () => {
       <div class="mb-4">
         <label for="password" class="form-label">Password: </label>
         <input
-          type="text"
+          type="password"
           id="password"
           name="password"
           class="form-control"
@@ -126,7 +166,7 @@ const showInput = async () => {
       </div>
       <button
         :disabled="!handleInput.email && !handleInput.password"
-        class="btn btn-success btn-block w-100 mt-3"
+        class="btn btn-warning text-light btn-block w-100 mt-3"
         type="submit"
         @click.prevent="showInput()"
       >
@@ -134,48 +174,35 @@ const showInput = async () => {
       </button>
     </div>
   </form>
-
-  <!-- <form action="">
-    <div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
-      <div class="row w-100">
-        <div class="col-md-6">
-          <img :src="bg_bamboo" alt="gambar rimba" width="100%" />
-        </div>
-        <div class="col-md-6 p-5">
-          <div class="card bg bg-transparent border border-light align-items-center p-5">
-            <img :src="bamboo" alt="gambar rimba" width="150px" />
-            <div class="mb-4 p-2 d-block w-100 form-control">
-              <input
-                type="text"
-                placeholder="Name"
-                class="form-control border border-light"
-                id="name"
-              />
-              <br />
-              <div class="d-flex">
-                <input
-                  type="password"
-                  placeholder="Password"
-                  class="form-control border border-light"
-                  id="password"
-                />
-                <button class="btn btn-transparent">*</button>
-              </div>
-            </div>
-            <div class="mb-4">
-              <RouterLink :to="{ name: 'dashboard' }" class="nav-link text-warning"
-                >Forget Password?</RouterLink
-              >
-            </div>
-            <button class="btn btn-warning d-block w-100 text-light" @click.prevent="showInput">
-              Login
-            </button>
-          </div>
+  <!-- <div class="container">
+    <div class="row mx-auto bg bg-primary w-100 p-5">
+      <div class="list" v-if="filterList === 'all'">
+        <h1>All List {{ tesStore.totalCount }}</h1>
+        <div
+          class="col-md-6 bg bg-warning mx-auto"
+          v-for="(user, index) in tesStore.usersLog"
+          :key="index"
+        >
+          <userDetails :user="user" />
         </div>
       </div>
+      <div class="list" v-if="filterList === 'favs'">
+        <h1>FAV List {{ tesStore.favCount }}</h1>
+        <div
+          class="col-md-6 bg bg-warning mx-auto"
+          v-for="(user, index) in tesStore.favorite"
+          :key="index"
+        >
+          <userDetails :user="user" />
+        </div>
+      </div>
+      <div class="list-button">
+        <button class="btn btn-primary" @click="filterList = 'all'">All</button>
+        <button class="btn btn-primary" @click="filterList = 'favs'">Fav</button>
+      </div>
     </div>
-  </form>
-</template> -->
+    <addUser />
+  </div> -->
 
   <!-- <script>
 import axios from 'axios'

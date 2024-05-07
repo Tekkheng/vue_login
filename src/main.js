@@ -4,7 +4,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-
 import App from './App.vue'
 import router from './router'
 import PrimeVue from 'primevue/config'
@@ -20,10 +19,10 @@ import './axios'
 // import print from 'vue3-print-nb'
 
 const app = createApp(App)
+
+app.use(PrimeVue)
 app.use(createPinia())
 app.use(router)
-app.use(PrimeVue)
-
 app.use(store)
 
 // app.use(print)

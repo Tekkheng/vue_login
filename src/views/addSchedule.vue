@@ -1,19 +1,18 @@
 <script setup>
 import NavbarComponent from '@/components/NavbarComponent.vue'
-import TruckStore from '@/store'
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+import useTruckStore from '@/stores/truckStore'
+import { useScheduleStore } from '@/stores/scheduleStore'
 
 import Calendar from 'primevue/calendar'
 
-const truckItems = computed(() => TruckStore.state.items)
+const truckStore = useTruckStore()
+const scheduleStore = useScheduleStore()
 
+const truck_type = ref('')
 const plat_no = ref('')
 const tgl_berangkat = ref('')
 const tgl_sampai = ref('')
-
-if (truckItems.value && truckItems.value.length > 0) {
-  plat_no.value = truckItems.value[0].plat_no
-}
 
 const saveSelectedPlatNo = (event) => {
   plat_no.value = event.target.value
@@ -28,25 +27,37 @@ const formatDate = (tgl) => {
 }
 
 const addNewItem = () => {
+  for (let truck of truckStore.truck) {
+    if (plat_no.value === truck.plat_no) {
+      truck_type.value = truck.truck_type.tipe_truck
+    }
+  }
   const frmt_tgl_berangkat = formatDate(tgl_berangkat.value)
   const frmt_tgl_sampai = formatDate(tgl_sampai.value)
 
   //   console.log(
   //     `platNO: ${plat_no.value}, tgl_berangkat: ${frmt_tgl_berangkat}, tgl_sampai: ${frmt_tgl_sampai}`
   //   )
+
   const newData = {
     plat_no: plat_no.value,
+    tipe_truck: truck_type.value,
     tgl_berangkat: frmt_tgl_berangkat,
     tgl_sampai: frmt_tgl_sampai
   }
-  TruckStore.dispatch('addItemSchedule', newData)
+  console.log(truck_type.value)
+  scheduleStore.addItemSchedule(newData)
   plat_no.value = ''
   tgl_berangkat.value = ''
   tgl_sampai.value = ''
+  truck_type.value = ''
 }
 
-onMounted(() => {
-  TruckStore.dispatch('fetchItems')
+onMounted(async () => {
+  await truckStore.fetchItems()
+  if (truckStore.truck && truckStore.truck.length > 0) {
+    plat_no.value = truckStore.truck[0].plat_no
+  }
 })
 </script>
 
@@ -68,7 +79,7 @@ onMounted(() => {
                   v-model="plat_no"
                   @change="saveSelectedPlatNo"
                 >
-                  <option v-for="(item, index) in truckItems" :key="index">
+                  <option v-for="(item, index) in truckStore.truck" :key="index">
                     {{ item.plat_no }}
                   </option>
                 </select>

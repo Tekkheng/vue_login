@@ -4,18 +4,20 @@ import Dashboard from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 
 import TruckView from '../views/truck_crud/TruckView.vue'
-// import AddView from '../views/data_crud/AddView.vue'
-
 import ScheduleView from '@/views/ScheduleView.vue'
 import addSchedule from '@/views/addSchedule.vue'
 import editSchedule from '@/views/editSchedule.vue'
 import NotFound from '@/views/NotFound.vue'
-import { defineProps } from 'vue'
+
+// import { computed } from 'vue'
+import CalendarTruck from '@/views/CalendarTruck.vue'
+// import useAuthStore from '@/stores/authStore'
 
 // const isUserLoggedIn = true
 
-const user = defineProps('users')
-console.log(user)
+// const userStore = useAuthStore()
+// const isUserLoggedIn = computed(() => userStore.fetchUser())
+// console.log(isUserLoggedIn)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +64,14 @@ const router = createRouter({
       path: '/schedules/:id',
       name: 'edit_schedules',
       component: editSchedule,
+      meta: {
+        needsAuth: true
+      }
+    },
+    {
+      path: '/calendarTruck',
+      name: 'calendarTruck',
+      component: CalendarTruck,
       meta: {
         needsAuth: true
       }
