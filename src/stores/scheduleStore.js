@@ -29,26 +29,27 @@ export const useScheduleStore = defineStore('scheduleStore', {
             confirmButtonText: 'Okay',
             timer: 1500
           })
-          // localCalendar
-          const dataTruck = response.data.data
-          const calendarApi = selectInfo.view.calendar
-          console.log(dataTruck)
-          calendarApi.addEvent({
-            id: dataTruck.id,
-            title: dataTruck.tipe_truck,
-            start: dataTruck.tgl_berangkat,
-            end: selectInfo.endStr,
-            allDay: selectInfo.allDay,
-            extendedProps: {
-              truck: dataTruck.plat_no,
-              status: 'done'
-            }
-          })
           if (selectInfo) {
-            setTimeout(() => {
-              router.push('/schedules')
-            }, 1500)
+            const dataTruck = response.data.data
+            const calendarApi = selectInfo.view.calendar
+            console.log(dataTruck)
+            calendarApi.addEvent({
+              id: dataTruck.id,
+              title: dataTruck.tipe_truck,
+              start: dataTruck.tgl_berangkat,
+              end: selectInfo.endStr,
+              allDay: selectInfo.allDay,
+              extendedProps: {
+                truck: dataTruck.plat_no,
+                status: 'done'
+              }
+            })
+            return
           }
+          // localCalendar
+          setTimeout(() => {
+            router.push('/schedules')
+          }, 1500)
         } else {
           Swal.fire({
             title: 'Failed',
