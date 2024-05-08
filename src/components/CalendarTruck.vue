@@ -60,7 +60,9 @@ const calendarOptions = ref({
   //     }
   //   },
   select: handleDateSelect,
-  eventClick: handleEventClick
+  eventClick: handleEventClick,
+  eventResize: updateEvent,
+  eventDrop: updateEvent
   // eventsSet: handleEvents
 })
 
@@ -97,6 +99,21 @@ function handleWeekendsToggle() {
 //     schedulesStore.deleteItemSchedule(clickInfo.event._def.publicId, clickInfo.event)
 //   }
 // }
+
+// update ui calendar event
+function updateEvent(clickInfo) {
+  // console.log(clickInfo.event.title, clickInfo.event.startStr, clickInfo.event.endStr)
+  const event = clickInfo.event
+  const idItem = event.id
+  console.log(event)
+  const data = {
+    plat_no: event.extendedProps.truck,
+    tipe_truck: event.title,
+    tgl_berangkat: event.startStr,
+    tgl_sampai: event.endStr
+  }
+  schedulesStore.updateItemSchedule({ idItem, newEditData: data, clickInfo })
+}
 
 function handleEventClick(clickInfo) {
   // set eventHandler && isAdd untuk kondisi if add atau remove
@@ -175,8 +192,7 @@ const clearValue = () => {
 function deleteHandler() {
   closeModal()
   const clickInfo = eventHandler.value
-  const current_id = clickInfo.event._def.publicId
-  console.log(clickInfo.event._def)
+  const current_id = clickInfo.event.id
   schedulesStore.deleteItemSchedule(current_id, clickInfo.event)
   eventHandler.value = null
   isAdd.value = null

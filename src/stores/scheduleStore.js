@@ -125,6 +125,7 @@ export const useScheduleStore = defineStore('scheduleStore', {
     },
     async updateItemSchedule(payload) {
       const { idItem, newEditData, clickInfo } = payload
+      console.log(newEditData, idItem)
       try {
         const response = await axios.put(`truck_schedule/${idItem}`, newEditData)
         if (response.status === 200) {
@@ -138,7 +139,30 @@ export const useScheduleStore = defineStore('scheduleStore', {
           const index = this.schedule.findIndex((schedule) => schedule.id === idItem)
           this.schedule.splice(index, 1, response.data.data)
           if (clickInfo) {
-            console.log('edit local!')
+            const dataTruck = response.data.data
+            const calendarApi = clickInfo.view.calendar
+            console.log('ini ', dataTruck)
+            calendarApi.getEventById(dataTruck.id).setProps({
+              title: dataTruck.tipe_truck,
+              start: dataTruck.tgl_berangkat,
+              end: clickInfo.endStr,
+              allDay: clickInfo.allDay,
+              extendedProps: {
+                truck: dataTruck.plat_no,
+                status: 'done'
+              }
+            })
+            // calendarApi.addEvent({
+            //   id: dataTruck.id,
+            //   title: dataTruck.tipe_truck,
+            //   start: dataTruck.tgl_berangkat,
+            //   end: clickInfo.endStr,
+            //   allDay: clickInfo.allDay,
+            //   extendedProps: {
+            //     truck: dataTruck.plat_no,
+            //     status: 'done'
+            //   }
+            // })
             return
           }
           setTimeout(() => {

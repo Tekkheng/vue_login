@@ -36,22 +36,18 @@ const truck_type = ref(null)
 const plat_no = ref(null)
 const schedulesStore = useScheduleStore()
 
-let editTitle = ref('')
 let editStart = ref('')
 let editEnd = ref('')
 
 const updateEvent = () => {
   const clickInfo = props.eventHandler
-  const idItem = clickInfo.event._def.publicId
+  const idItem = clickInfo.event.id
 
   for (let i in props.truck) {
     if (props.truck[i].plat_no === plat_no.value) {
-      truck_type.value = props.truck[i].tipe_truck
+      truck_type.value = props.truck[i].truck_type.tipe_truck
     }
   }
-
-  alert(idItem)
-  console.log(idItem, plat_no.value, truck_type.value, editStart.value, editEnd.value)
   const data = {
     plat_no: plat_no.value,
     tipe_truck: truck_type.value,
@@ -117,7 +113,7 @@ watchEffect(async () => {
     plat_no.value = props.truck[0].plat_no
   }
   if (!props.isAdd && props.isOpen) {
-    editTitle.value = await props.eventHandler.event.title
+    plat_no.value = await props.eventHandler.event.extendedProps.truck
     editStart.value = await formatDate(props.eventHandler.event.start)
     editEnd.value = await formatDate(props.eventHandler.event.end)
   }
@@ -187,15 +183,27 @@ onMounted(async () => {
             <button @click="emit('deleteHandler')" class="btn btn-outline-primary me-2">
               Delete
             </button>
-            <button @click.stop="closeModal" class="btn btn-outline-danger">Close</button>
           </div>
         </div>
         <br />
         <div class="modal-footer d-flex justify-content-center">
           <div name="footer">
+            <div class="text-end">
+              <i @click.stop="closeModal" class="btn-transparent pi pi-times fs-5 close"></i>
+            </div>
+
             <legend>Edit event</legend>
             <div class="mb-2">
-              <input type="text" v-model="editTitle" class="form-control" />
+              <select
+                class="form-select"
+                id="plat_no"
+                v-model="plat_no"
+                @change="saveSelectedPlatNo"
+              >
+                <option v-for="(item, index) in truck" :key="index">
+                  {{ item.plat_no }}
+                </option>
+              </select>
             </div>
             <div class="mb-2">
               <input type="date" v-model="editStart" class="form-control" />
@@ -204,8 +212,7 @@ onMounted(async () => {
               <input type="date" v-model="editEnd" class="form-control" />
             </div>
             <div class="mt-2">
-              <button class="btn btn-outline-primary me-2" @click="updateEvent">Save</button>
-              <button @click.stop="closeModal" class="btn btn-outline-danger">Close</button>
+              <button class="btn btn-outline-primary me-2" @click="updateEvent">Update</button>
             </div>
           </div>
         </div>
