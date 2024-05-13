@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watchEffect } from 'vue'
 import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
@@ -17,11 +17,6 @@ let eventHandler = ref(null)
 let isAdd = ref(null)
 
 const plat_no = ref('')
-
-// const truck_type = ref('')
-// const saveSelectedPlatNo = (event) => {
-//   plat_no.value = event.target.value
-// }
 
 const calendarOptions = ref({
   plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -47,22 +42,10 @@ const calendarOptions = ref({
   dayMaxEvents: true,
   weekends: true,
   events: [], // Initialize events array
-  //   eventDidMount: function (info) {
-  //     if (info.event.extendedProps.status === 'done') {
-  //       // Change background color of row
-  //       info.el.style.backgroundColor = 'red'
-
-  //       // Change color of dot marker
-  //       var dotEl = info.el.getElementsByClassName('fc-event-dot')[0]
-  //       if (dotEl) {
-  //         dotEl.style.backgroundColor = 'white'
-  //       }
-  //     }
-  //   },
   select: handleDateSelect,
   eventClick: handleEventClick,
-  eventResize: updateEvent,
-  eventDrop: updateEvent
+  eventResize: handlerEventDrop,
+  eventDrop: handlerEventDrop
   // eventsSet: handleEvents
 })
 
@@ -79,17 +62,6 @@ const calendarOptions = ref({
 //   return String(eventGuid.value++)
 // }
 
-// function formatTime(date) {
-//   return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-// }
-
-// function formatDate(date) {
-//   const year = date.getFullYear()
-//   const month = String(date.getMonth() + 1).padStart(2, '0')
-//   const day = String(date.getDate()).padStart(2, '0')
-//   return `${year}-${month}-${day}`
-// }
-
 function handleWeekendsToggle() {
   calendarOptions.value.weekends = !calendarOptions.value.weekends // update a property
 }
@@ -100,23 +72,42 @@ function handleWeekendsToggle() {
 //   }
 // }
 
+function deleteHandler() {
+  closeModal()
+  const clickInfo = eventHandler.value
+  const current_id = clickInfo.event.id
+  schedulesStore.deleteItemSchedule(current_id, clickInfo.event)
+  isAdd.value = null
+  eventHandler.value = null
+}
+
 // update ui calendar event
-function updateEvent(clickInfo) {
+const isUpdate = ref(null)
+function handlerEventDrop(clickInfo) {
+  eventHandler.value = clickInfo
+  isAdd.value = false
+  isUpdate.value = true
+  openModal()
+
   // console.log(clickInfo.event.title, clickInfo.event.startStr, clickInfo.event.endStr)
-  const event = clickInfo.event
-  const idItem = event.id
-  console.log(event)
-  const data = {
-    plat_no: event.extendedProps.truck,
-    tipe_truck: event.title,
-    tgl_berangkat: event.startStr,
-    tgl_sampai: event.endStr
-  }
-  schedulesStore.updateItemSchedule({ idItem, newEditData: data, clickInfo })
+  // const event = clickInfo.event
+  // const idItem = event.id
+  // // console.log(event)
+  // const data = {
+  //   plat_no: event.extendedProps.truck,
+  //   tipe_truck: event.title,
+  //   tgl_berangkat: event.startStr,
+  //   tgl_sampai: event.endStr
+  // }
+  // console.log(
+  //   `seluruh data eventdrop, ${data.plat_no}, ${data.tipe_truck}, ${data.tgl_berangkat}, ${data.tgl_sampai}, ${idItem}`
+  // )
+  // console.log(event)
+  // schedulesStore.updateItemSchedule({ idItem, newEditData: data, clickInfo })
 }
 
 function handleEventClick(clickInfo) {
-  // set eventHandler && isAdd untuk kondisi if add atau remove
+  // set eventHandler && isAdd untuk kondisi if add atau show
   eventHandler.value = clickInfo
   isAdd.value = false
   // set isModalOpened = true
@@ -125,10 +116,10 @@ function handleEventClick(clickInfo) {
 
 // handle add data
 function handleDateSelect(selectInfo) {
-  // set eventHandler && isAdd untuk kondisi if add atau remove
+  // set eventHandler && isAdd untuk kondisi if add atau show
   eventHandler.value = selectInfo
   isAdd.value = true
-  // alert(eventHandler.value)
+
   // set isModalOpened = true
   openModal()
 }
@@ -137,77 +128,20 @@ const openModal = () => {
   isModalOpened.value = true
 }
 const closeModal = () => {
+  if (isUpdate.value) {
+    eventHandler.value.revert()
+  }
   isModalOpened.value = false
+  isUpdate.value = null
 }
-
-// const submitHandler = () => {
-//   closeModal()
-//   //   const selectInfo = eventHandler.value
-//   //   let calendarApi = selectInfo.view.calendar
-//   //   calendarApi.unselect() // clear date selection
-
-//   //   for (let truck of truckStore.truck) {
-//   //     if (plat_no.value === truck.plat_no) {
-//   //       truck_type.value = truck.truck_type.tipe_truck
-//   //     }
-//   //   }
-
-//   //   // if (!plat_no.value) {
-//   //   //   return 'tidak boleh kosong!'
-//   //   // }
-
-//   //   let endDate = new Date(selectInfo.endStr)
-//   //   endDate.setDate(endDate.getDate() - 1)
-//   //   endDate = formatDate(endDate)
-
-//   //   calendarApi.addEvent({
-//   //     title: truck_type.value,
-//   //     start: selectInfo.startStr,
-//   //     end: selectInfo.endStr,
-//   //     allDay: selectInfo.allDay,
-//   //     extendedProps: {
-//   //       truck: plat_no.value,
-//   //       status: 'done'
-//   //     }
-//   //   })
-
-//   //   const data = {
-//   //     plat_no: plat_no.value,
-//   //     tipe_truck: truck_type.value,
-//   //     tgl_berangkat: selectInfo.startStr,
-//   //     tgl_sampai: endDate
-//   //   }
-//   //   const isCalendar = true
-//   //   schedulesStore.addItemSchedule(data, isCalendar)
-//   //   eventHandler.value = null
-//   //   isAdd.value = null
-//   //   console.log(isAdd.value)
-// }
 
 const clearValue = () => {
   eventHandler.value = null
   isAdd.value = null
+  isUpdate.value = null
 }
 
-function deleteHandler() {
-  closeModal()
-  const clickInfo = eventHandler.value
-  const current_id = clickInfo.event.id
-  schedulesStore.deleteItemSchedule(current_id, clickInfo.event)
-  eventHandler.value = null
-  isAdd.value = null
-}
-
-onMounted(async () => {
-  // let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
-  await schedulesStore.fetchItemsSchedule()
-  await truckStore.fetchItems()
-
-  if (truckStore.truck && truckStore.truck.length > 0) {
-    plat_no.value = truckStore.truck[0].plat_no
-    console.log(plat_no.value)
-  }
-
+watchEffect(() => {
   if (schedulesStore.schedule) {
     const events = schedulesStore.schedule.map((truck) => ({
       id: truck.id,
@@ -224,6 +158,17 @@ onMounted(async () => {
     }))
     calendarOptions.value.events = events
     // console.log('Calendar Events:', events)
+  }
+})
+
+onMounted(async () => {
+  // let todayStr = new Date().toISOString().replace(/T.*$/, '') // YYYY-MM-DD of today
+  await schedulesStore.fetchItemsSchedule()
+  await truckStore.fetchItems()
+
+  if (truckStore.truck && truckStore.truck.length > 0) {
+    plat_no.value = truckStore.truck[0].plat_no
+    console.log(plat_no.value)
   }
 })
 </script>
@@ -254,75 +199,6 @@ onMounted(async () => {
     </div>
   </div>
 
-  <!-- <div v-if="isModalOpened" class="modal-mask">
-    <div class="modal-wrapper">
-      <div class="modal-container" ref="target" v-if="isAdd">
-        <h4>Add Truck Schedule</h4>
-        <br />
-        <div class="modal-header">
-          <label for="plat_no" class="col-sm-2 col-form-label">Plat No</label>
-          <div class="col-sm-8">
-            <select class="form-select" id="plat_no" v-model="plat_no" @change="saveSelectedPlatNo">
-              <option v-for="(item, index) in truckStore.truck" :key="index">
-                {{ item.plat_no }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <div class="modal-body"></div>
-        <br />
-        <div class="modal-footer d-flex justify-content-center">
-          <div name="footer">
-            <div>
-              <button @click.stop="submitHandler" class="btn btn-outline-primary me-2">
-                Submit
-              </button>
-              <button @click.stop="closeModal" class="btn btn-outline-danger">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-container" ref="target" v-else-if="!isAdd">
-        <h4>Data Truck Schedule</h4>
-        <br />
-        <div class="modal-header"></div>
-
-        <div class="modal-body">
-          <div class="modal-item mb-2">
-            <span>Tipe Truck: {{ eventAdd.event.title }}</span>
-          </div>
-          <div class="modal-item mb-2">
-            <span>Plat No: {{ eventAdd.event.extendedProps.truck }}</span>
-          </div>
-          <div class="modal-item mb-2">
-            <span
-              >Tanggal Berangkat:
-              {{ formatDate(eventAdd.event.start) + ' ' + formatTime(eventAdd.event.start) }}</span
-            >
-          </div>
-          <div class="modal-item mb-2">
-            <span
-              >Tanggal Sampai:
-              {{ formatDate(eventAdd.event.end) + ' ' + formatTime(eventAdd.event.end) }}</span
-            >
-          </div>
-        </div>
-        <br />
-        <div class="modal-footer d-flex justify-content-center">
-          <div name="footer">
-            <div>
-              <button @click.stop="deleteHandler" class="btn btn-outline-primary me-2">
-                Delete
-              </button>
-              <button @click.stop="closeModal" class="btn btn-outline-danger">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
   <EventModal
     :isOpen="isModalOpened"
     :isAdd="isAdd"
@@ -330,8 +206,8 @@ onMounted(async () => {
     :truck="truckStore.truck"
     @clearValue="clearValue"
     @modal-close="closeModal"
-    @deleteHandler="deleteHandler"
     name="first-modal"
+    @deleteHandler="deleteHandler"
   >
     <!-- <template #header>Custom header</template>
     <template #content>Custom content</template>

@@ -55,11 +55,24 @@ const updateEvent = () => {
     tgl_sampai: editEnd.value
   }
   schedulesStore.updateItemSchedule({ idItem, newEditData: data, clickInfo })
+  closeModal()
+  emit('clearValue')
+  plat_no.value = null
+  editStart.value = null
+  editEnd.value = null
 }
 
 const saveSelectedPlatNo = (event) => {
   plat_no.value = event.target.value
 }
+
+// function deleteHandler() {
+//   closeModal()
+//   const clickInfo = props.eventHandler
+//   const current_id = clickInfo.event.id
+//   schedulesStore.deleteItemSchedule(current_id, clickInfo.event)
+//   emit('clearValue')
+// }
 
 const submitHandler = () => {
   closeModal()
@@ -72,10 +85,6 @@ const submitHandler = () => {
       truck_type.value = props.truck[i].truck_type.tipe_truck
     }
   }
-
-  // if (!plat_no.value) {
-  //   return 'tidak boleh kosong!'
-  // }
 
   let endDate = new Date(selectInfo.endStr)
   endDate.setDate(endDate.getDate() - 1)
@@ -93,7 +102,6 @@ const submitHandler = () => {
   //       status: 'done'
   //     }
   //   })
-  console.log(calendarApi)
 
   const data = {
     plat_no: plat_no.value,
@@ -105,14 +113,16 @@ const submitHandler = () => {
   schedulesStore.addItemSchedule(data, selectInfo)
   //  set eventHandler.value && isAdd.value = null
   truck_type.value = null
+  plat_no.value = null
   emit('clearValue')
 }
 
 watchEffect(async () => {
-  if (props.truck.length > 0) {
+  if (props.truck.length > 0 && props.isAdd) {
     plat_no.value = props.truck[0].plat_no
   }
   if (!props.isAdd && props.isOpen) {
+    console.log(props.eventHandler)
     plat_no.value = await props.eventHandler.event.extendedProps.truck
     editStart.value = await formatDate(props.eventHandler.event.start)
     editEnd.value = await formatDate(props.eventHandler.event.end)

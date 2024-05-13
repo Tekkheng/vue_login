@@ -3,6 +3,13 @@ import { defineStore } from 'pinia'
 import Swal from 'sweetalert2'
 import router from '@/router'
 
+// function formatDate(date) {
+//   const year = date.getFullYear()
+//   const month = String(date.getMonth() + 1).padStart(2, '0')
+//   const day = String(date.getDate()).padStart(2, '0')
+//   return `${year}-${month}-${day}`
+// }
+
 export const useScheduleStore = defineStore('scheduleStore', {
   state: () => ({
     schedule: []
@@ -14,50 +21,104 @@ export const useScheduleStore = defineStore('scheduleStore', {
       this.schedule = response.data
     },
     async addItemSchedule(newItem, selectInfo) {
+      // const calendarApi = selectInfo.view.calendar
+      // console.log(calendarApi)
+      // console.log(newItem)
+
+      // cek kondisi plat_no pada event === plat_no pada input dan jika tgl berangkat dan tgl sampai pada event tabrakan dengan input tgl_berangkat dan tgl_sampai maka true
+
+      // const isOverlap = this.schedule.some(
+      //   (schedule) =>
+      //     (newItem.plat_no === schedule.plat_no &&
+      //       ((newItem.tgl_berangkat >= schedule.tgl_berangkat &&
+      //         newItem.tgl_berangkat <= schedule.tgl_sampai) ||
+      //         (newItem.tgl_sampai >= schedule.tgl_berangkat &&
+      //           newItem.tgl_sampai <= schedule.tgl_sampai))) ||
+      //     (schedule.tgl_berangkat >= newItem.tgl_berangkat &&
+      //       schedule.tgl_berangkat <= newItem.tgl_sampai) ||
+      //     (schedule.tgl_sampai >= newItem.tgl_berangkat &&
+      //       schedule.tgl_sampai <= newItem.tgl_sampai)
+      // )
+      console.log(this.schedule)
+      const isOverlap = this.schedule.some(
+        (schedule) =>
+          (newItem.plat_no === schedule.plat_no &&
+            ((newItem.tgl_berangkat >= schedule.tgl_berangkat &&
+              newItem.tgl_berangkat <= schedule.tgl_sampai) ||
+              (newItem.tgl_sampai >= schedule.tgl_berangkat &&
+                newItem.tgl_sampai <= schedule.tgl_sampai))) ||
+          (newItem.plat_no === schedule.plat_no &&
+            ((schedule.tgl_berangkat >= newItem.tgl_berangkat &&
+              schedule.tgl_berangkat <= newItem.tgl_sampai) ||
+              (schedule.tgl_sampai >= newItem.tgl_berangkat &&
+                schedule.tgl_sampai <= newItem.tgl_sampai)))
+      )
+
       try {
-        const response = await axios.post(`truck_schedule`, JSON.stringify(newItem), {
-          headers: { 'Content-type': 'application/json' }
-        })
-        if (response.status === 200) {
-          this.schedule.push(response.data.data)
-          // console.log(response.data.data)
-          // console.log(setLocalCalendar)
-          Swal.fire({
-            title: 'Success!',
-            text: 'Add Data Success!',
-            icon: 'success',
-            confirmButtonText: 'Okay',
-            timer: 1500
-          })
-          if (selectInfo) {
-            const dataTruck = response.data.data
-            const calendarApi = selectInfo.view.calendar
-            console.log(dataTruck)
-            calendarApi.addEvent({
-              id: dataTruck.id,
-              title: dataTruck.tipe_truck,
-              start: dataTruck.tgl_berangkat,
-              end: selectInfo.endStr,
-              allDay: selectInfo.allDay,
-              extendedProps: {
-                truck: dataTruck.plat_no,
-                status: 'done'
-              }
-            })
-            return
-          }
-          // localCalendar
-          setTimeout(() => {
-            router.push('/schedules')
-          }, 1500)
-        } else {
+        if (newItem.tgl_sampai < newItem.tgl_berangkat) {
           Swal.fire({
             title: 'Failed',
-            text: 'Add Data Failed!',
+            text: `Invalid Input Date!`,
             icon: 'error',
             confirmButtonText: 'Okay',
-            timer: 1500
+            timer: 4500
           })
+          return
+        }
+        if (isOverlap) {
+          Swal.fire({
+            title: 'Failed',
+            text: `Jadwal Truck pada plat ${newItem.plat_no} tabrakan !`,
+            icon: 'error',
+            confirmButtonText: 'Okay',
+            timer: 4500
+          })
+        } else {
+          const response = await axios.post(`truck_schedule`, JSON.stringify(newItem), {
+            headers: { 'Content-type': 'application/json' }
+          })
+          if (response.status === 200) {
+            this.schedule.push(response.data.data)
+            Swal.fire({
+              title: 'Success!',
+              text: 'Add Data Success!',
+              icon: 'success',
+              confirmButtonText: 'Okay',
+              timer: 1500
+            })
+            // if (selectInfo) {
+            //   const dataTruck = response.data.data
+            //   console.log(dataTruck)
+            //   console.log(current_events)
+            //   calendarApi.addEvent({
+            //     id: dataTruck.id,
+            //     title: dataTruck.tipe_truck,
+            //     start: dataTruck.tgl_berangkat,
+            //     end: selectInfo.endStr,
+            //     allDay: selectInfo.allDay,
+            //     extendedProps: {
+            //       truck: dataTruck.plat_no,
+            //       status: 'done'
+            //     }
+            //   })
+            //   return
+            // }
+            // localCalendar
+            if (selectInfo) {
+              return
+            }
+            setTimeout(() => {
+              router.push('/schedules')
+            }, 1500)
+          } else {
+            Swal.fire({
+              title: 'Failed',
+              text: 'Add Data Failed!',
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              timer: 1500
+            })
+          }
         }
       } catch (err) {
         console.log(err)
@@ -70,7 +131,9 @@ export const useScheduleStore = defineStore('scheduleStore', {
         })
       }
     },
-    async deleteItemSchedule(noItem, deleteLocalCalendar) {
+
+    //   deleteLocalCalendar.remove()
+    async deleteItemSchedule(noItem) {
       Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -84,11 +147,13 @@ export const useScheduleStore = defineStore('scheduleStore', {
           try {
             const response = await axios.delete(`truck_schedule/${noItem}`)
             if (response.status === 200) {
-              if (deleteLocalCalendar) {
-                deleteLocalCalendar.remove()
-              }
-              const index = this.schedule.findIndex((schedule) => schedule.id === noItem)
+              console.log('Events:', this.schedule)
+              console.log('No item:', noItem)
+              const index = this.schedule.findIndex((_event) => _event.id == noItem)
+              console.log('Index:', index)
+
               this.schedule.splice(index, 1)
+
               Swal.fire({
                 title: 'Success!',
                 text: 'Remove Data Success!',
@@ -125,67 +190,147 @@ export const useScheduleStore = defineStore('scheduleStore', {
     },
     async updateItemSchedule(payload) {
       const { idItem, newEditData, clickInfo } = payload
-      console.log(newEditData, idItem)
+      console.log(
+        `seluruh data eventdrop, ${newEditData.plat_no}, ${newEditData.tipe_truck}, ${newEditData.tgl_berangkat}, ${newEditData.tgl_sampai}, ${idItem}`
+      )
+
+      // cek kondisi plat_no pada event === plat_no pada input dan jika tgl berangkat dan tgl sampai pada event tabrakan dengan input tgl_berangkat dan tgl_sampai maka true
+      // const isOverlap = await current_events.some(
+      //   (event) =>
+      //     event.extendedProps.truck === newEditData.plat_no &&
+      //     ((newEditData.tgl_berangkat >= formatDate(event.start) &&
+      //       newEditData.tgl_berangkat <= formatDate(event.end)) ||
+      //       (newEditData.tgl_sampai >= formatDate(event.start) &&
+      //         newEditData.tgl_sampai <= formatDate(event.end)))
+      // )
+
+      // const scheduleItemIndex = this.schedule.find((schedule) => schedule.id == idItem)
+      // console.log('scheduleITemIndex: ', scheduleItemIndex.id)
+
+      // const isOverlap = this.schedule.some((schedule) => {
+      //   return (
+      //     (newEditData.plat_no === schedule.plat_no &&
+      //       idItem !== schedule.id &&
+      //       ((newEditData.tgl_berangkat >= schedule.tgl_berangkat &&
+      //         newEditData.tgl_berangkat <= schedule.tgl_sampai) ||
+      //         (newEditData.tgl_sampai >= schedule.tgl_berangkat &&
+      //           newEditData.tgl_sampai <= schedule.tgl_sampai))) ||
+      //     (newEditData.plat_no === schedule.plat_no &&
+      //       ((schedule.tgl_berangkat >= newEditData.tgl_berangkat &&
+      //         schedule.tgl_berangkat <= newEditData.tgl_sampai) ||
+      //         (schedule.tgl_sampai >= newEditData.tgl_berangkat &&
+      //           schedule.tgl_sampai <= newEditData.tgl_sampai)))
+      //   )
+      // })
+
+      const isOverlap = this.schedule.some((schedule) => {
+        return (
+          (newEditData.plat_no === schedule.plat_no &&
+            idItem !== schedule.id && // Periksa bahwa idItem tidak sama dengan id schedule
+            ((newEditData.tgl_berangkat >= schedule.tgl_berangkat &&
+              newEditData.tgl_berangkat <= schedule.tgl_sampai) ||
+              (newEditData.tgl_sampai >= schedule.tgl_berangkat &&
+                newEditData.tgl_sampai <= schedule.tgl_sampai))) ||
+          (newEditData.plat_no === schedule.plat_no &&
+            ((schedule.tgl_berangkat >= newEditData.tgl_berangkat &&
+              schedule.tgl_berangkat <= newEditData.tgl_sampai) ||
+              (schedule.tgl_sampai >= newEditData.tgl_berangkat &&
+                schedule.tgl_sampai <= newEditData.tgl_sampai)))
+        )
+      })
+
+      // const isOverlap = false
       try {
-        const response = await axios.put(`truck_schedule/${idItem}`, newEditData)
-        if (response.status === 200) {
+        if (newEditData.tgl_sampai < newEditData.tgl_berangkat) {
           Swal.fire({
-            title: 'Success',
-            text: 'Edit Data Success',
-            icon: 'success',
-            confirmButtonText: 'Okay',
-            timer: 1500
-          })
-          const index = this.schedule.findIndex((schedule) => schedule.id === idItem)
-          this.schedule.splice(index, 1, response.data.data)
-          if (clickInfo) {
-            const dataTruck = response.data.data
-            const calendarApi = clickInfo.view.calendar
-            console.log('ini ', dataTruck)
-            calendarApi.getEventById(dataTruck.id).setProps({
-              title: dataTruck.tipe_truck,
-              start: dataTruck.tgl_berangkat,
-              end: clickInfo.endStr,
-              allDay: clickInfo.allDay,
-              extendedProps: {
-                truck: dataTruck.plat_no,
-                status: 'done'
-              }
-            })
-            // calendarApi.addEvent({
-            //   id: dataTruck.id,
-            //   title: dataTruck.tipe_truck,
-            //   start: dataTruck.tgl_berangkat,
-            //   end: clickInfo.endStr,
-            //   allDay: clickInfo.allDay,
-            //   extendedProps: {
-            //     truck: dataTruck.plat_no,
-            //     status: 'done'
-            //   }
-            // })
-            return
-          }
-          setTimeout(() => {
-            router.push('/schedules')
-          }, 1500)
-        } else {
-          Swal.fire({
-            title: 'Failed!',
-            text: 'Edit Data Failed',
+            title: 'Failed',
+            text: `Invalid Input Date!`,
             icon: 'error',
             confirmButtonText: 'Okay',
-            timer: 1500
+            timer: 4500
           })
+          if (clickInfo.revert) {
+            clickInfo.revert()
+          }
+          return
+        }
+        if (isOverlap) {
+          Swal.fire({
+            title: 'Failed',
+            text: `Jadwal Truck pada plat ${newEditData.plat_no} tabrakan !`,
+            icon: 'error',
+            confirmButtonText: 'Okay',
+            timer: 4500
+          })
+          if (clickInfo.revert) {
+            clickInfo.revert()
+          }
+        } else {
+          const response = await axios.put(`truck_schedule/${idItem}`, newEditData)
+          if (response.status === 200) {
+            Swal.fire({
+              title: 'Success',
+              text: 'Edit Data Success',
+              icon: 'success',
+              confirmButtonText: 'Okay',
+              timer: 1500
+            })
+            console.log('Events:', this.schedule)
+            console.log('No item:', idItem)
+            const index = this.schedule.findIndex((_event) => _event.id == idItem)
+            console.log('Index:', index)
+
+            this.schedule.splice(index, 1, response.data.data)
+            // const index = this.schedule.findIndex((schedule) => schedule.id === idItem)
+            // this.schedule.splice(index, 1, response.data.data)
+            // if (clickInfo) {
+            //   const dataTruck = response.data.data
+            //   const calendarApi = clickInfo.view.calendar
+            //   console.log('ini ', dataTruck)
+            //   calendarApi.getEventById(dataTruck.id).setProps({
+            //     title: dataTruck.tipe_truck,
+            //     start: dataTruck.tgl_berangkat,
+            //     end: clickInfo.endStr,
+            //     allDay: clickInfo.allDay,
+            //     extendedProps: {
+            //       truck: dataTruck.plat_no,
+            //       status: 'done'
+            //     }
+            //   })
+            //   return
+            // }
+            if (clickInfo) {
+              return
+            }
+
+            setTimeout(() => {
+              router.push('/schedules')
+            }, 1500)
+          } else {
+            Swal.fire({
+              title: 'Failed!',
+              text: 'Edit Data Failed',
+              icon: 'error',
+              confirmButtonText: 'Okay',
+              timer: 1500
+            })
+            if (clickInfo.revert) {
+              clickInfo.revert()
+            }
+          }
         }
       } catch (err) {
         console.log(err)
         Swal.fire({
           title: 'Failed',
-          text: err.response.data,
+          text: err,
           icon: 'error',
           confirmButtonText: 'Okay',
           timer: 1500
         })
+        if (clickInfo.revert) {
+          clickInfo.revert()
+        }
       }
     }
   }
