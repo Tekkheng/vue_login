@@ -3,13 +3,6 @@ import { defineStore } from 'pinia'
 import Swal from 'sweetalert2'
 import router from '@/router'
 
-// function formatDate(date) {
-//   const year = date.getFullYear()
-//   const month = String(date.getMonth() + 1).padStart(2, '0')
-//   const day = String(date.getDate()).padStart(2, '0')
-//   return `${year}-${month}-${day}`
-// }
-
 export const useScheduleStore = defineStore('scheduleStore', {
   state: () => ({
     schedule: []
@@ -26,19 +19,6 @@ export const useScheduleStore = defineStore('scheduleStore', {
       // console.log(newItem)
 
       // cek kondisi plat_no pada event === plat_no pada input dan jika tgl berangkat dan tgl sampai pada event tabrakan dengan input tgl_berangkat dan tgl_sampai maka true
-
-      // const isOverlap = this.schedule.some(
-      //   (schedule) =>
-      //     (newItem.plat_no === schedule.plat_no &&
-      //       ((newItem.tgl_berangkat >= schedule.tgl_berangkat &&
-      //         newItem.tgl_berangkat <= schedule.tgl_sampai) ||
-      //         (newItem.tgl_sampai >= schedule.tgl_berangkat &&
-      //           newItem.tgl_sampai <= schedule.tgl_sampai))) ||
-      //     (schedule.tgl_berangkat >= newItem.tgl_berangkat &&
-      //       schedule.tgl_berangkat <= newItem.tgl_sampai) ||
-      //     (schedule.tgl_sampai >= newItem.tgl_berangkat &&
-      //       schedule.tgl_sampai <= newItem.tgl_sampai)
-      // )
       console.log(this.schedule)
       const isOverlap = this.schedule.some(
         (schedule) =>
@@ -190,48 +170,24 @@ export const useScheduleStore = defineStore('scheduleStore', {
     },
     async updateItemSchedule(payload) {
       const { idItem, newEditData, clickInfo } = payload
-      console.log(
-        `seluruh data eventdrop, ${newEditData.plat_no}, ${newEditData.tipe_truck}, ${newEditData.tgl_berangkat}, ${newEditData.tgl_sampai}, ${idItem}`
-      )
-
-      // cek kondisi plat_no pada event === plat_no pada input dan jika tgl berangkat dan tgl sampai pada event tabrakan dengan input tgl_berangkat dan tgl_sampai maka true
-      // const isOverlap = await current_events.some(
-      //   (event) =>
-      //     event.extendedProps.truck === newEditData.plat_no &&
-      //     ((newEditData.tgl_berangkat >= formatDate(event.start) &&
-      //       newEditData.tgl_berangkat <= formatDate(event.end)) ||
-      //       (newEditData.tgl_sampai >= formatDate(event.start) &&
-      //         newEditData.tgl_sampai <= formatDate(event.end)))
+      // console.log(
+      //   `seluruh data eventdrop, ${newEditData.plat_no}, ${newEditData.tipe_truck}, ${newEditData.tgl_berangkat}, ${newEditData.tgl_sampai}, ${idItem}`
       // )
 
-      // const scheduleItemIndex = this.schedule.find((schedule) => schedule.id == idItem)
-      // console.log('scheduleITemIndex: ', scheduleItemIndex.id)
+      // console.log(this.schedule)
+      // console.log(newEditData, idItem)
 
-      // const isOverlap = this.schedule.some((schedule) => {
-      //   return (
-      //     (newEditData.plat_no === schedule.plat_no &&
-      //       idItem !== schedule.id &&
-      //       ((newEditData.tgl_berangkat >= schedule.tgl_berangkat &&
-      //         newEditData.tgl_berangkat <= schedule.tgl_sampai) ||
-      //         (newEditData.tgl_sampai >= schedule.tgl_berangkat &&
-      //           newEditData.tgl_sampai <= schedule.tgl_sampai))) ||
-      //     (newEditData.plat_no === schedule.plat_no &&
-      //       ((schedule.tgl_berangkat >= newEditData.tgl_berangkat &&
-      //         schedule.tgl_berangkat <= newEditData.tgl_sampai) ||
-      //         (schedule.tgl_sampai >= newEditData.tgl_berangkat &&
-      //           schedule.tgl_sampai <= newEditData.tgl_sampai)))
-      //   )
-      // })
-
+      // cek kondisi plat_no pada event === plat_no pada input dan idItem != id eventyglgi diedit dan jika tgl berangkat dan tgl sampai pada event tabrakan dengan input tgl_berangkat dan tgl_sampai maka true
       const isOverlap = this.schedule.some((schedule) => {
         return (
           (newEditData.plat_no === schedule.plat_no &&
-            idItem !== schedule.id && // Periksa bahwa idItem tidak sama dengan id schedule
+            idItem != schedule.id && // Periksa bahwa idItem tidak sama dengan id schedule
             ((newEditData.tgl_berangkat >= schedule.tgl_berangkat &&
               newEditData.tgl_berangkat <= schedule.tgl_sampai) ||
               (newEditData.tgl_sampai >= schedule.tgl_berangkat &&
                 newEditData.tgl_sampai <= schedule.tgl_sampai))) ||
           (newEditData.plat_no === schedule.plat_no &&
+            idItem != schedule.id &&
             ((schedule.tgl_berangkat >= newEditData.tgl_berangkat &&
               schedule.tgl_berangkat <= newEditData.tgl_sampai) ||
               (schedule.tgl_sampai >= newEditData.tgl_berangkat &&
