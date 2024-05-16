@@ -28,7 +28,7 @@ onMounted(() => {
 <template>
   <nav class="navbar navbar-expand-lg bg-light mb-5 p-1">
     <div class="container-fluid d-flex justify-content-center">
-      <a class="navbar-brand text-warning fw-bold flex-grow-1 text-center" href="#"
+      <a class="navbar-brand text-success fw-bold flex-grow-1 text-center" href="#"
         ><span class="fs-2">R</span>imba</a
       >
       <button
@@ -54,6 +54,14 @@ onMounted(() => {
           </li>
           <li class="nav-item">
             <RouterLink :to="{ name: 'calendarTruck' }" class="nav-link">Calendar Truck</RouterLink>
+          </li>
+          <li class="nav-item">
+            <RouterLink :to="{ name: 'deliverySchedule' }" class="nav-link"
+              >Delivery Schedule</RouterLink
+            >
+          </li>
+          <li class="nav-item">
+            <RouterLink :to="{ name: 'drivers' }" class="nav-link">Drivers</RouterLink>
           </li>
         </ul>
 
@@ -97,17 +105,17 @@ button {
 }
 
 button.logout:hover {
-  color: rgb(255, 179, 0);
+  color: rgb(59, 133, 60);
 }
 
 .router-link-active {
-  color: rgb(255, 179, 0);
+  color: rgb(59, 133, 60);
 }
 
 a {
   color: black;
 }
 a:hover {
-  color: rgb(255, 179, 0);
+  color: rgb(59, 133, 60);
 }
 </style>

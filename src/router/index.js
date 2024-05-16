@@ -4,13 +4,25 @@ import Dashboard from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 
 import TruckView from '../views/truck_crud/TruckView.vue'
-import ScheduleView from '@/views/ScheduleView.vue'
-import addSchedule from '@/views/addSchedule.vue'
-import editSchedule from '@/views/editSchedule.vue'
+import ScheduleView from '@/views/truck_schedule/ScheduleView.vue'
+import addSchedule from '@/views/truck_schedule/addSchedule.vue'
+import editSchedule from '@/views/truck_schedule/editSchedule.vue'
+
+// DeliverySchedule //
+import deliverySchedule from '@/components/delivery_schedule/deliverySchedule.vue'
+import addDelivery from '@/components/delivery_schedule/addDelivery.vue'
+import editDelivery from '@/components/delivery_schedule/editDelivery.vue'
+
 import NotFound from '@/views/NotFound.vue'
 
 // import { computed } from 'vue'
 import CalendarTruck from '@/views/CalendarTruck.vue'
+
+// driver
+import DriverView from '@/views/drivers/driverView.vue'
+import addDriver from '@/views/drivers/addDriver.vue'
+import editDriver from '@/views/drivers/editDriver.vue'
+
 // import useAuthStore from '@/stores/authStore'
 
 // const isUserLoggedIn = true
@@ -44,6 +56,7 @@ const router = createRouter({
         needsAuth: false
       }
     },
+    // schedule route
     {
       path: '/schedules',
       name: 'schedules',
@@ -68,6 +81,7 @@ const router = createRouter({
         needsAuth: true
       }
     },
+    // calendar truck route
     {
       path: '/calendarTruck',
       name: 'calendarTruck',
@@ -76,6 +90,7 @@ const router = createRouter({
         needsAuth: true
       }
     },
+    // truck route
     {
       path: '/truck',
       name: 'truck',
@@ -84,6 +99,59 @@ const router = createRouter({
         needsAuth: true
       }
     },
+    // delivery route
+    {
+      path: '/deliverySchedule',
+      name: 'deliverySchedule',
+      component: deliverySchedule,
+      meta: {
+        needsAuth: true
+      }
+    },
+    {
+      path: '/addDelivery',
+      name: 'addDelivery',
+      component: addDelivery,
+      meta: {
+        needsAuth: true
+      }
+    },
+
+    {
+      path: '/editDelivery/:id',
+      name: 'editDelivery',
+      component: editDelivery,
+      meta: {
+        needsAuth: true
+      }
+    },
+    // drivers route
+    {
+      path: '/drivers',
+      name: 'drivers',
+      component: DriverView,
+      meta: {
+        needsAuth: true
+      }
+    },
+
+    {
+      path: '/editDriver/:id',
+      name: 'editDriver',
+      component: editDriver,
+      meta: {
+        needsAuth: true
+      }
+    },
+    {
+      path: '/addDriver',
+      name: 'addDriver',
+      component: addDriver,
+      meta: {
+        needsAuth: true
+      }
+    },
+
     {
       path: '/:catchAll(.*)',
       name: '404Name',

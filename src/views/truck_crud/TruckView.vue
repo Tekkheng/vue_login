@@ -259,7 +259,7 @@ onMounted(async () => {
                 <tr v-for="(item, index) in TruckStore.truck" :key="index">
                   <th scope="row">{{ item.no }}</th>
                   <td>{{ item.plat_no }}</td>
-                  <td>{{ item.tipe_truck }}</td>
+                  <td>{{ item.truck_type && item.truck_type.tipe_truck }}</td>
                   <td>
                     <button
                       type="button"

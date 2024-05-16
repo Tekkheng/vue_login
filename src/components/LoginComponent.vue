@@ -59,57 +59,6 @@ const showInput = async () => {
     })
   }
 }
-// const showInput = async () => {
-//   const { email, password } = handleInput
-//   if (!email) {
-//     handleInput.msg_email = 'Email tidak boleh kosong!'
-//     handleInput.msg_err = ''
-//     return
-//   } else if (!password) {
-//     handleInput.msg_password = 'kata sandi tidak boleh kosong!'
-//     return
-//   }
-//   const data = {
-//     email: email,
-//     password: password
-//   }
-//   try {
-//     const response = await axios.post('login', data)
-//     console.log(response.data.message)
-//     if (response.data.status === 200) {
-//       Swal.fire({
-//         title: 'Success!',
-//         text: 'Login Success!',
-//         icon: 'success',
-//         confirmButtonText: 'Okay',
-//         timer: 1500
-//       })
-
-//       Object.assign(handleInput, {
-//         password: '',
-//         email: '',
-//         err: ''
-//       })
-
-//       localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
-//       setTimeout(() => {
-//         router.push('/dashboard')
-//       }, 2000)
-//     } else {
-//       Object.assign(handleInput, {
-//         msg_err: 'Login gagal. ' + response.data.message,
-//         msg_password: '',
-//         msg_email: ''
-//       })
-//     }
-//     console.log(response.data)
-//   } catch (err) {
-//     console.error('Login gagal:', err)
-//     handleInput.msg_err = 'Login gagal:' + err
-//   }
-// }
-
-// let filterList = ref('all')
 </script>
 
 <template>
@@ -166,7 +115,7 @@ const showInput = async () => {
       </div>
       <button
         :disabled="!handleInput.email && !handleInput.password"
-        class="btn btn-warning text-light btn-block w-100 mt-3"
+        class="btn btn-success text-light btn-block w-100 mt-3"
         type="submit"
         @click.prevent="showInput()"
       >

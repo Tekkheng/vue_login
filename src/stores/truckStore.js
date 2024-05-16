@@ -20,6 +20,7 @@ const useTruckStore = defineStore('truckStore', {
         })
         if (response.status === 200) {
           this.truck.push(response.data.data)
+          await this.fetchItems()
           Swal.fire({
             title: 'Success!',
             text: 'Add Data Success!',

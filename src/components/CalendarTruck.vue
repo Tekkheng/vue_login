@@ -8,6 +8,7 @@ import { useScheduleStore } from '@/stores/scheduleStore'
 import NavbarComponent from './NavbarComponent.vue'
 import useTruckStore from '@/stores/truckStore'
 import EventModal from './EventModal.vue'
+import listPlugin from '@fullcalendar/list'
 // import EventModal from './EventModal.vue'
 
 const schedulesStore = useScheduleStore()
@@ -19,11 +20,11 @@ let isAdd = ref(null)
 const plat_no = ref('')
 
 const calendarOptions = ref({
-  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+  plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin],
   headerToolbar: {
     left: 'prev today next',
     center: 'title',
-    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
   },
   //// ubah language
   // locale: 'fr',
@@ -150,7 +151,8 @@ watchEffect(() => {
       // end: new Date(truck.tgl_sampai + 'T16:00:00'),
       start: new Date(truck.tgl_berangkat + 'T09:00:00'),
       end: new Date(truck.tgl_sampai + 'T16:00:00'),
-      //   backgroundColor: 'green',
+      backgroundColor: 'green',
+      // textColor: 'white',
       extendedProps: {
         truck: truck.plat_no,
         status: 'done'
@@ -267,11 +269,18 @@ b {
   margin: 0 auto;
 }
 
-/* style warna calendar*/
+/* style warna text event yg hanya 1 hari*/
 .fc-event {
   /* background-color: rgb(255, 179, 0) !important; */
-  border: 1px solid transparent;
+  /* border: 1px solid green; */
+  color: black !important;
 }
+
+.fc-daygrid-more-link {
+  text-decoration: none;
+  color: green;
+}
+
 .fc-daygrid-day-number {
   color: black !important;
   text-decoration: none !important;
@@ -285,6 +294,25 @@ b {
   color: black;
   text-decoration: none;
 }
+
+/* list edit */
+.fc-list-day-text {
+  color: #333;
+  text-decoration: none;
+}
+
+.fc-list-day-side-text {
+  color: black;
+  text-decoration: none;
+}
+
+/* .fc-list-day-number {
+  color: #666;
+} */
+
+/* .fc-list-item-title {
+  color: #007bff;
+} */
 
 /* for modal */
 .modal-mask {
