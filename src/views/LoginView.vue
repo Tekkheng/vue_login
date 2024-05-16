@@ -4,7 +4,6 @@ import LoginComponent from '../components/LoginComponent.vue'
 
 <template>
   <main>
-    <h1>tes</h1>
     <LoginComponent />
   </main>
 </template>
