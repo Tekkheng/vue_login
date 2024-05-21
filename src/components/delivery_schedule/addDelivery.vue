@@ -1,5 +1,4 @@
 <script setup>
-import NavbarComponent from '@/components/NavbarComponent.vue'
 import { ref, onMounted } from 'vue'
 import useTruckStore from '@/stores/truckStore'
 import { useDeliveryStore } from '@/stores/deliveryStore'
@@ -57,19 +56,16 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarComponent />
-
-  <div class="container-fluid p-5">
-    <div class="row justify-content-center align-items-center">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center bg bg-white p-3 m-3 rounded">
+      <RouterLink
+        class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-3"
+        :to="{ name: 'deliverySchedule' }"
+        ><span class="ms-3 fs-5">Back</span></RouterLink
+      >
+      <h4 class="mb-5 text-center">ADD DELIVERY SCHEDULES</h4>
       <div class="col-md-6">
         <div class="mb-4 d-flex flex-column justify-content-center align-items-center">
-          <div class="d-flex">
-            <RouterLink
-              class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-5"
-              :to="{ name: 'deliverySchedule' }"
-            ></RouterLink>
-            <h4 class="mb-5 text-center">ADD DELIVERY SCHEDULES</h4>
-          </div>
           <form>
             <div class="mb-4 row">
               <label for="plat_no" class="col-sm-2 form-label">Plat No</label>

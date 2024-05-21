@@ -1,5 +1,4 @@
 <script setup>
-import NavbarComponent from '@/components/NavbarComponent.vue'
 import { useScheduleStore } from '@/stores/scheduleStore'
 import axios from 'axios'
 import { onMounted } from 'vue'
@@ -63,16 +62,88 @@ const removedItem = (noItem) => {
 
 onMounted(async () => {
   await schedulesStore.fetchItemsSchedule()
+  console.log(schedulesStore)
 })
 </script>
 
 <template>
-  <NavbarComponent />
-  <div class="container-fluid p-5">
+  <div class="container-fluid p-3">
     <div class="row d-flex justify-content-center">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
+            <h4>TRUCK SCHEDULES</h4>
+            <RouterLink :to="{ name: 'add_schedules' }" class="nav-link">
+              <button class="btn btn-outline-primary ms-2">
+                <i class="pi pi-plus p-2 fw-bold"></i>Add Data
+              </button>
+            </RouterLink>
+          </div>
+          <DataTable
+            :value="schedulesStore.schedule"
+            paginator
+            :rows="5"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            stripedRows
+            showGridlines
+            tableStyle="min-width: 50rem"
+          >
+            <TableColumn field="id" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="driver_name.nama_driver"
+              header="Nama Driver"
+              bodyStyle="overflow: visible"
+            ></TableColumn>
+            <TableColumn
+              field="plat_no"
+              header="Plat No"
+              bodyStyle="overflow: visible"
+            ></TableColumn>
+            <TableColumn
+              field="truck_type.tipe_truck"
+              header="Tipe Truck"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <TableColumn
+              field="tgl_berangkat"
+              header="Tanggal Berangkat"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <TableColumn
+              field="tgl_sampai"
+              header="Tanggal Sampai"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <!-- <TableColumn field="no" header="No" style="width: 25%"></TableColumn> -->
+
+            <TableColumn bodyStyle="overflow: visible" header="Action" class="d-flex">
+              <template #body="scheduleValue">
+                <RouterLink
+                  :to="{ name: 'edit_schedules', params: { id: scheduleValue.data.id } }"
+                  class="nav-link"
+                >
+                  <button class="btn btn-outline-primary me-2">
+                    <i class="pi pi-pen-to-square"></i>
+                  </button>
+                </RouterLink>
+
+                <button
+                  class="btn btn-outline-danger me-2"
+                  @click.prevent="removedItem(scheduleValue.data.id)"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+
+                <button
+                  class="btn btn-outline-success"
+                  @click.prevent="printData(scheduleValue.data.id)"
+                >
+                  <i class="pi pi-print"></i>
+                </button>
+              </template>
+            </TableColumn>
+          </DataTable>
+          <!-- <div class="card-header d-flex justify-content-between">
             <h4>TRUCK SCHEDULES</h4>
             <RouterLink :to="{ name: 'add_schedules' }" class="nav-link">
               <button class="btn btn-outline-primary ms-2">
@@ -85,6 +156,7 @@ onMounted(async () => {
               <thead>
                 <tr class="text-center">
                   <th scope="col">No</th>
+                  <th scope="col">Nama Driver</th>
                   <th scope="col">Plat No</th>
                   <th scope="col">Truck Tipe</th>
                   <th scope="col">Tanggal Berangkat</th>
@@ -99,8 +171,9 @@ onMounted(async () => {
                   class="text-center"
                 >
                   <th scope="row">{{ item.id }}</th>
+                  <td>{{ item.nama_driver }}</td>
                   <td>{{ item.plat_no }}</td>
-                  <td>{{ item.tipe_truck }}</td>
+                  <td>{{ item.truck_type && item.truck_type.tipe_truck }}</td>
                   <td>{{ item.tgl_berangkat }}</td>
                   <td>{{ item.tgl_sampai }}</td>
                   <td class="d-flex justify-content-center align-items-center">
@@ -125,54 +198,10 @@ onMounted(async () => {
                     >
                       <i class="pi pi-print"></i>
                     </button>
-
-                    <!-- <button
-                      class="btn btn-outline-success d-block w-50"
-                      @click.prevent="printData(item.id)"
-                      v-print="'#printMe'"
-                    >
-                      <i class="pi pi-print"></i>
-                    </button> -->
                   </td>
                 </tr>
               </tbody>
             </table>
-          </div>
-          <!-- <div
-            class="modal fade"
-            id="exampleModal "
-            tabindex="-1"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-body" id="printMe">
-                  <div class="card-body" :hidden="!isPrint">
-                    <h4 class="text-center">Data Truck Schedule Print</h4>
-                    <br />
-                    <table class="table table-bordered table-hover">
-                      <thead>
-                        <tr class="text-center">
-                          <th scope="col">No</th>
-                          <th scope="col">Plat No</th>
-                          <th scope="col">Tanggal Berangkat</th>
-                          <th scope="col">Tanggal Sampai</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr v-for="(item, index) in dataPrint" :key="index" class="text-center">
-                          <th scope="row">{{ item.id }}</th>
-                          <td>{{ item.plat_no }}</td>
-                          <td>{{ item.tgl_berangkat }}</td>
-                          <td>{{ item.tgl_sampai }}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div> -->
         </div>
       </div>

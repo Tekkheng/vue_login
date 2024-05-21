@@ -1,5 +1,4 @@
 <script setup>
-import Navbar from '../components/NavbarComponent.vue'
 import useAuthStore from '@/stores/authStore'
 import { computed, onMounted } from 'vue'
 
@@ -13,8 +12,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <Navbar :user="$attrs.user" />
-  <div class="container">
+  <!-- <Navbar :user="$attrs.user" /> -->
+  <div class="d-flex container justify-content-center align-items-center" style="height: 60vh">
     <h4 class="text-center">Welcomes to Dashboard, {{ userData.nama }}</h4>
   </div>
   <div class="container">

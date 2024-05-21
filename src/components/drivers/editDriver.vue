@@ -1,5 +1,4 @@
 <script setup>
-import NavbarComponent from '@/components/NavbarComponent.vue'
 import { ref, onMounted } from 'vue'
 import { useTypeStore } from '@/stores/typeTruckStore'
 import { useDriverStore } from '@/stores/driverStore'
@@ -60,10 +59,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarComponent />
-
-  <div class="container-fluid p-5">
-    <div class="row justify-content-center align-items-center">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center bg bg-white p-3 m-3 rounded">
+      <RouterLink
+        class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-3"
+        :to="{ name: 'drivers' }"
+        ><span class="ms-3 fs-5">Back</span></RouterLink
+      >
       <div class="col-md-6">
         <div class="mb-4 d-flex flex-column justify-content-center align-items-center">
           <h4 class="mb-5 text-center">Edit DRIVER</h4>

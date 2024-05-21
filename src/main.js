@@ -6,26 +6,33 @@ import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import PrimeVue from 'primevue/config'
 
-import 'primevue/resources/themes/bootstrap4-light-blue/theme.css' // Ganti dengan tema yang Anda inginkan
+// import 'primevue/resources/themes/bootstrap4-light-blue/theme.css' // Ganti dengan tema yang Anda inginkan
+import 'primevue/resources/themes/aura-light-green/theme.css'
 import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 // import 'primevue/components/calendar/calendar.css'
 
-import store from '@/store/index'
+import PrimeVue from 'primevue/config'
+import '@/assets/styles.scss'
+
 import './axios'
 
-// import print from 'vue3-print-nb'
+import DataTable from 'primevue/datatable'
+import TableColumn from 'primevue/column'
+
+// import ColumnGroup from 'primevue/columngroup' // optional
+// import Row from 'primevue/row'
 
 const app = createApp(App)
 
 app.use(PrimeVue)
 app.use(createPinia())
 app.use(router)
-app.use(store)
 
-// app.use(print)
+// Register PrimeVue components globally
+app.component('DataTable', DataTable)
+app.component('TableColumn', TableColumn)
 
 // apiurl from .env
 // app.config.globalProperties.$apiURL = 'http://localhost:8000/api'

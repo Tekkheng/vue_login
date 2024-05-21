@@ -5,11 +5,9 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { useScheduleStore } from '@/stores/scheduleStore'
-import NavbarComponent from './NavbarComponent.vue'
 import useTruckStore from '@/stores/truckStore'
 import EventModal from './EventModal.vue'
 import listPlugin from '@fullcalendar/list'
-// import EventModal from './EventModal.vue'
 
 const schedulesStore = useScheduleStore()
 const truckStore = useTruckStore()
@@ -67,12 +65,6 @@ function handleWeekendsToggle() {
   calendarOptions.value.weekends = !calendarOptions.value.weekends // update a property
 }
 
-// function handleEventClick(clickInfo) {
-//   if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-//     schedulesStore.deleteItemSchedule(clickInfo.event._def.publicId, clickInfo.event)
-//   }
-// }
-
 function deleteHandler() {
   closeModal()
   const clickInfo = eventHandler.value
@@ -89,22 +81,6 @@ function handlerEventDrop(clickInfo) {
   isAdd.value = false
   isUpdate.value = true
   openModal()
-
-  // console.log(clickInfo.event.title, clickInfo.event.startStr, clickInfo.event.endStr)
-  // const event = clickInfo.event
-  // const idItem = event.id
-  // // console.log(event)
-  // const data = {
-  //   plat_no: event.extendedProps.truck,
-  //   tipe_truck: event.title,
-  //   tgl_berangkat: event.startStr,
-  //   tgl_sampai: event.endStr
-  // }
-  // console.log(
-  //   `seluruh data eventdrop, ${data.plat_no}, ${data.tipe_truck}, ${data.tgl_berangkat}, ${data.tgl_sampai}, ${idItem}`
-  // )
-  // console.log(event)
-  // schedulesStore.updateItemSchedule({ idItem, newEditData: data, clickInfo })
 }
 
 function handleEventClick(clickInfo) {
@@ -143,22 +119,41 @@ const clearValue = () => {
 }
 
 watchEffect(() => {
+  console.log(schedulesStore.schedule)
   if (schedulesStore.schedule) {
-    const events = schedulesStore.schedule.map((truck) => ({
-      id: truck.id,
-      title: truck.tipe_truck,
-      // start: new Date(truck.tgl_berangkat + 'T12:00:00'),
-      // end: new Date(truck.tgl_sampai + 'T16:00:00'),
-      start: new Date(truck.tgl_berangkat + 'T09:00:00'),
-      end: new Date(truck.tgl_sampai + 'T16:00:00'),
-      backgroundColor: 'green',
-      // textColor: 'white',
-      extendedProps: {
-        truck: truck.plat_no,
-        status: 'done'
-      }
-    }))
+    const events = schedulesStore.schedule
+      .filter((truck) => truck.driver_name.isActive)
+      .map((truck) => ({
+        id: truck.id,
+        title: truck.driver_name.nama_driver,
+        // title: truck.nama_driver,
+        // start: new Date(truck.tgl_berangkat + 'T12:00:00'),
+        // end: new Date(truck.tgl_sampai + 'T16:00:00'),
+        start: new Date(truck.tgl_berangkat + 'T09:00:00'),
+        end: new Date(truck.tgl_sampai + 'T16:00:00'),
+        backgroundColor: 'green',
+        // textColor: 'white',
+        extendedProps: {
+          plat_no: truck.plat_no,
+          tipe_truck: truck.truck_type.tipe_truck
+          // tipe_truck: truck.tipe_truck
+        }
+      }))
     calendarOptions.value.events = events
+
+    // const events = schedulesStore.schedule.map((truck) => ({
+    //   id: truck.id,
+    //   title: truck.driver_name.nama_driver,
+    //   start: new Date(truck.tgl_berangkat + 'T09:00:00'),
+    //   end: new Date(truck.tgl_sampai + 'T16:00:00'),
+    //   backgroundColor: 'green',
+    //   extendedProps: {
+    //     plat_no: truck.plat_no,
+    //     tipe_truck: truck.truck_type.tipe_truck,
+    //     status: truck.driver_name.isActive
+    //   }
+    // }))
+    // calendarOptions.value.events = events
     // console.log('Calendar Events:', events)
   }
 })
@@ -176,10 +171,9 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarComponent />
-  <div class="demo-app">
+  <div class="demo-app bg bg-white rounded" style="margin: 0rem 2rem 0rem 2rem">
     <div class="demo-app-main">
-      <label class="ms-5">
+      <label class="">
         <input type="checkbox" :checked="calendarOptions.weekends" @change="handleWeekendsToggle" />
         toggle weekends
       </label>
@@ -187,9 +181,10 @@ onMounted(async () => {
         <template v-slot:eventContent="arg">
           <div class="fc-content">
             <!-- <b>{{ arg.timeText }}</b> -->
-            <i>{{ arg.event.title }}</i>
-            <span v-if="arg.event.extendedProps && arg.event.extendedProps.truck">
-              - Plat {{ arg.event.extendedProps.truck }}</span
+            <i>{{ arg.event.title }} - </i>
+            <i>{{ arg.event.extendedProps.tipe_truck }}</i>
+            <span v-if="arg.event.extendedProps && arg.event.extendedProps.plat_no">
+              - Plat {{ arg.event.extendedProps.plat_no }}</span
             >
             <!-- <i> - {{ arg.event.extendedProps.status }}</i> -->
             <!-- Menampilkan jam berangkat dan jam sampai -->

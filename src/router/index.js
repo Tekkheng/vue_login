@@ -22,6 +22,7 @@ import CalendarTruck from '@/views/CalendarTruck.vue'
 import DriverView from '@/views/drivers/driverView.vue'
 import addDriver from '@/views/drivers/addDriver.vue'
 import editDriver from '@/views/drivers/editDriver.vue'
+import AppLayout from '@/layout/AppLayout.vue'
 
 // import useAuthStore from '@/stores/authStore'
 
@@ -35,20 +36,6 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: Dashboard,
-      meta: {
-        needsAuth: true
-      }
-      // beforeEnter(to) {
-      //   alert('Please Login First')
-      //   if (to.name !== 'dashboard') {
-      //     return '/login'
-      //   }
-      // }
-    },
-    {
       path: '/login',
       name: 'login',
       component: LoginView,
@@ -56,109 +43,262 @@ const router = createRouter({
         needsAuth: false
       }
     },
-    // schedule route
     {
-      path: '/schedules',
-      name: 'schedules',
-      component: ScheduleView,
+      path: '/',
+      component: AppLayout,
+      redirect: '/login',
       meta: {
         needsAuth: true
-      }
-    },
-    {
-      path: '/add_schedules',
-      name: 'add_schedules',
-      component: addSchedule,
-      meta: {
-        needsAuth: true
-      }
-    },
-    {
-      path: '/schedules/:id',
-      name: 'edit_schedules',
-      component: editSchedule,
-      meta: {
-        needsAuth: true
-      }
-    },
-    // calendar truck route
-    {
-      path: '/calendarTruck',
-      name: 'calendarTruck',
-      component: CalendarTruck,
-      meta: {
-        needsAuth: true
-      }
-    },
-    // truck route
-    {
-      path: '/truck',
-      name: 'truck',
-      component: TruckView,
-      meta: {
-        needsAuth: true
-      }
-    },
-    // delivery route
-    {
-      path: '/deliverySchedule',
-      name: 'deliverySchedule',
-      component: deliverySchedule,
-      meta: {
-        needsAuth: true
-      }
-    },
-    {
-      path: '/addDelivery',
-      name: 'addDelivery',
-      component: addDelivery,
-      meta: {
-        needsAuth: true
-      }
-    },
+      },
+      children: [
+        {
+          path: '/dashboard',
+          name: 'dashboard',
+          component: Dashboard,
+          meta: {
+            needsAuth: true
+          }
+          // beforeEnter(to) {
+          //   alert('Please Login First')
+          //   if (to.name !== 'dashboard') {
+          //     return '/login'
+          //   }
+          // }
+        },
+        // schedule route
+        {
+          path: '/schedules',
+          name: 'schedules',
+          component: ScheduleView,
+          meta: {
+            needsAuth: true
+          }
+        },
+        {
+          path: '/add_schedules',
+          name: 'add_schedules',
+          component: addSchedule,
+          meta: {
+            needsAuth: true
+          }
+        },
+        {
+          path: '/schedules/:id',
+          name: 'edit_schedules',
+          component: editSchedule,
+          meta: {
+            needsAuth: true
+          }
+        },
+        // calendar truck route
+        {
+          path: '/calendarTruck',
+          name: 'calendarTruck',
+          component: CalendarTruck,
+          meta: {
+            needsAuth: true
+          }
+        },
+        // truck route
+        {
+          path: '/truck',
+          name: 'truck',
+          component: TruckView,
+          meta: {
+            needsAuth: true
+          }
+        },
+        // delivery route
+        {
+          path: '/deliverySchedule',
+          name: 'deliverySchedule',
+          component: deliverySchedule,
+          meta: {
+            needsAuth: true
+          }
+        },
+        {
+          path: '/addDelivery',
+          name: 'addDelivery',
+          component: addDelivery,
+          meta: {
+            needsAuth: true
+          }
+        },
 
-    {
-      path: '/editDelivery/:id',
-      name: 'editDelivery',
-      component: editDelivery,
-      meta: {
-        needsAuth: true
-      }
-    },
-    // drivers route
-    {
-      path: '/drivers',
-      name: 'drivers',
-      component: DriverView,
-      meta: {
-        needsAuth: true
-      }
-    },
+        {
+          path: '/editDelivery/:id',
+          name: 'editDelivery',
+          component: editDelivery,
+          meta: {
+            needsAuth: true
+          }
+        },
+        // drivers route
+        {
+          path: '/drivers',
+          name: 'drivers',
+          component: DriverView,
+          meta: {
+            needsAuth: true
+          }
+        },
 
-    {
-      path: '/editDriver/:id',
-      name: 'editDriver',
-      component: editDriver,
-      meta: {
-        needsAuth: true
-      }
-    },
-    {
-      path: '/addDriver',
-      name: 'addDriver',
-      component: addDriver,
-      meta: {
-        needsAuth: true
-      }
-    },
+        {
+          path: '/editDriver/:id',
+          name: 'editDriver',
+          component: editDriver,
+          meta: {
+            needsAuth: true
+          }
+        },
+        {
+          path: '/addDriver',
+          name: 'addDriver',
+          component: addDriver,
+          meta: {
+            needsAuth: true
+          }
+        },
 
-    {
-      path: '/:catchAll(.*)',
-      name: '404Name',
-      component: NotFound
+        {
+          path: '/:catchAll(.*)',
+          name: '404Name',
+          component: NotFound
+        }
+      ]
     }
   ]
 })
+
+// const router = createRouter({
+//   history: createWebHistory(import.meta.env.BASE_URL),
+//   routes: [
+//     {
+//       path: '/dashboard',
+//       name: 'dashboard',
+//       component: Dashboard,
+//       meta: {
+//         needsAuth: true
+//       }
+//       // beforeEnter(to) {
+//       //   alert('Please Login First')
+//       //   if (to.name !== 'dashboard') {
+//       //     return '/login'
+//       //   }
+//       // }
+//     },
+//     {
+//       path: '/login',
+//       name: 'login',
+//       component: LoginView,
+//       meta: {
+//         needsAuth: false
+//       }
+//     },
+//     // schedule route
+//     {
+//       path: '/schedules',
+//       name: 'schedules',
+//       component: ScheduleView,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     {
+//       path: '/add_schedules',
+//       name: 'add_schedules',
+//       component: addSchedule,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     {
+//       path: '/schedules/:id',
+//       name: 'edit_schedules',
+//       component: editSchedule,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     // calendar truck route
+//     {
+//       path: '/calendarTruck',
+//       name: 'calendarTruck',
+//       component: CalendarTruck,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     // truck route
+//     {
+//       path: '/truck',
+//       name: 'truck',
+//       component: TruckView,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     // delivery route
+//     {
+//       path: '/deliverySchedule',
+//       name: 'deliverySchedule',
+//       component: deliverySchedule,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     {
+//       path: '/addDelivery',
+//       name: 'addDelivery',
+//       component: addDelivery,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+
+//     {
+//       path: '/editDelivery/:id',
+//       name: 'editDelivery',
+//       component: editDelivery,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     // drivers route
+//     {
+//       path: '/drivers',
+//       name: 'drivers',
+//       component: DriverView,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+
+//     {
+//       path: '/editDriver/:id',
+//       name: 'editDriver',
+//       component: editDriver,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+//     {
+//       path: '/addDriver',
+//       name: 'addDriver',
+//       component: addDriver,
+//       meta: {
+//         needsAuth: true
+//       }
+//     },
+
+//     {
+//       path: '/:catchAll(.*)',
+//       name: '404Name',
+//       component: NotFound
+//     }
+//   ]
+// })
 
 // router.beforeEach((to, from, next) => {
 //   if (to.meta.needsAuth) {

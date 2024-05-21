@@ -167,14 +167,11 @@ export const useDriverStore = defineStore('driverStore', {
             confirmButtonText: 'Okay',
             timer: 1500
           })
-          const index = this.driver.findIndex((_event) => _event.id == idItem)
-          //   console.log('Index:', index)
-
-          this.fetchItemsDriver()
-          this.driver.splice(index, 1, response.data.data)
-          setTimeout(() => {
-            router.push('/drivers')
-          }, 1500)
+          //   this.fetchItemsDriver()
+          const driver = this.driver.find((driver) => driver.id === idItem)
+          if (driver) {
+            driver.isActive = isActive
+          }
         } else {
           Swal.fire({
             title: 'Failed!',

@@ -29,7 +29,7 @@ onMounted(() => {
   <nav class="navbar navbar-expand-lg bg-light mb-5 p-1">
     <div class="container-fluid d-flex justify-content-center">
       <a class="navbar-brand text-success fw-bold flex-grow-1 text-center" href="#"
-        ><span class="fs-2">R</span>imba</a
+        ><span class="fs-2">R</span>imb</a
       >
       <button
         class="navbar-toggler"

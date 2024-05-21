@@ -176,10 +176,12 @@ onMounted(() => {
 </template> -->
 
 <script setup>
-import NavbarComponent from '@/components/NavbarComponent.vue'
 import useTruckStore from '@/stores/truckStore'
 
 import { onMounted, ref } from 'vue'
+
+// import ColumnGroup from 'primevue/columngroup' // optional
+// import Row from 'primevue/row' // optional
 
 const plat_no = ref('')
 const tipe_truck = ref(null)
@@ -216,6 +218,7 @@ const updatedItem = (noItem) => {
 }
 
 const removedItem = (noItem) => {
+  console.log(noItem)
   TruckStore.deleteItem(noItem)
 }
 
@@ -226,11 +229,70 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarComponent />
-  <div class="container-fluid p-5">
+  <div class="container-fluid p-3">
     <div class="row d-flex justify-content-center">
-      <div class="col-md-6">
-        <div class="card">
+      <div class="col-md-12">
+        <div class="card text-center">
+          <div class="card-header d-flex">
+            <h4>DATA TRUCK</h4>
+            <!-- <span style="display: inline-block; transform: scaleX(-1)">🚚</span> -->
+            <button
+              type="button"
+              class="btn btn-outline-primary ms-auto"
+              data-bs-toggle="modal"
+              data-bs-target="#exampleModal"
+              data-bs-whatever="@mdo"
+              @click.prevent="isEdit = false"
+            >
+              <i class="pi pi-plus p-2"></i> Add Data
+            </button>
+          </div>
+          <DataTable
+            :value="TruckStore.truck"
+            paginator
+            :rows="5"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            stripedRows
+            showGridlines
+            tableStyle="min-width: 50rem"
+          >
+            <TableColumn field="no" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="plat_no"
+              header="Plat No"
+              bodyStyle="overflow: visible"
+            ></TableColumn>
+            <TableColumn
+              field="truck_type.tipe_truck"
+              header="Tipe Truck"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <!-- <TableColumn field="no" header="No" style="width: 25%"></TableColumn> -->
+
+            <TableColumn bodyStyle="overflow: visible" header="Action">
+              <template #body="truckValue">
+                <button
+                  type="button"
+                  class="btn btn-outline-primary me-2"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModal"
+                  data-bs-whatever="@mdo"
+                  @click.prevent="keepCurrentId(truckValue.data.no)"
+                >
+                  <i class="pi pi-pen-to-square"></i>
+                </button>
+
+                <button
+                  class="btn btn-outline-danger"
+                  @click.prevent="removedItem(truckValue.data.no)"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+              </template>
+            </TableColumn>
+          </DataTable>
+        </div>
+        <!-- <div class="card">
           <div class="card-header d-flex">
             <h4>DATA TRUCK</h4>
             <button
@@ -280,7 +342,7 @@ onMounted(async () => {
               </tbody>
             </table>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -354,3 +416,12 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style>
+.p-datatable-table th {
+  border: 1px solid #dee2e6;
+}
+.p-datatable-table td {
+  border: 1px solid #dee2e6;
+}
+</style>

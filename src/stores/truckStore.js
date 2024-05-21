@@ -116,6 +116,7 @@ const useTruckStore = defineStore('truckStore', {
           if (index !== -1) {
             this.truck.splice(index, 1, response.data.data)
           }
+          await this.fetchItems()
         } else {
           Swal.fire({
             title: 'Failed!',

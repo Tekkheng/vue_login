@@ -1,6 +1,5 @@
 <script setup>
 import { onMounted } from 'vue'
-import NavbarComponent from '../NavbarComponent.vue'
 import { useDeliveryStore } from '@/stores/deliveryStore'
 
 const deliveryStore = useDeliveryStore()
@@ -11,17 +10,75 @@ const removedItem = (noItem) => {
 
 onMounted(async () => {
   await deliveryStore.fetchItemsDelivery()
-  console.log(deliveryStore)
+  // console.log(deliveryStore)
 })
 </script>
 
 <template>
-  <NavbarComponent />
-  <div class="container-fluid p-5">
+  <div class="container-fluid p-3">
     <div class="row d-flex justify-content-center">
-      <div class="col-md-8">
+      <div class="col-md-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
+            <h4>Delivery Schedules</h4>
+            <RouterLink :to="{ name: 'addDelivery' }" class="nav-link">
+              <button class="btn btn-outline-primary ms-2">
+                <i class="pi pi-plus p-2 fw-bold"></i>Add Delivery
+              </button>
+            </RouterLink>
+          </div>
+          <DataTable
+            :value="deliveryStore.delivery"
+            paginator
+            :rows="5"
+            :rowsPerPageOptions="[5, 10, 20, 50]"
+            stripedRows
+            showGridlines
+            tableStyle="min-width: 50rem"
+          >
+            <TableColumn field="id" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="no_delivery"
+              header="Nomor Delivery"
+              bodyStyle="overflow: visible"
+            ></TableColumn>
+            <TableColumn
+              field="plat_no.plat_no"
+              header="Plat No"
+              bodyStyle="overflow: visible"
+            ></TableColumn>
+            <TableColumn
+              field="tgl_berangkat"
+              header="Estimasi Tanggal Berangkat"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <TableColumn
+              field="tgl_sampai"
+              header="Estimasi Tanggal Sampai"
+              bodyStyle="overflow: visible;"
+            ></TableColumn>
+            <!-- <TableColumn field="no" header="No" style="width: 25%"></TableColumn> -->
+
+            <TableColumn bodyStyle="overflow: visible" header="Action" class="d-flex">
+              <template #body="deliveryValue">
+                <RouterLink
+                  :to="{ name: 'editDelivery', params: { id: deliveryValue.data.id } }"
+                  class="nav-link w-50"
+                >
+                  <button class="btn btn-outline-primary d-block me-2">
+                    <i class="pi pi-pen-to-square"></i>
+                  </button>
+                </RouterLink>
+                <button
+                  class="btn btn-outline-danger d-block w-50 me-2"
+                  @click.prevent="removedItem(deliveryValue.data.id)"
+                >
+                  <i class="pi pi-trash"></i>
+                </button>
+              </template>
+            </TableColumn>
+          </DataTable>
+          <!-- <div class="card-header d-flex justify-content-between">
             <h4>Delivery Schedules</h4>
             <RouterLink :to="{ name: 'addDelivery' }" class="nav-link">
               <button class="btn btn-outline-primary ms-2">
@@ -71,7 +128,7 @@ onMounted(async () => {
                 </tr>
               </tbody>
             </table>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

@@ -14,6 +14,7 @@ export const useScheduleStore = defineStore('scheduleStore', {
       this.schedule = response.data
     },
     async addItemSchedule(newItem, selectInfo) {
+      console.log(this.schedule)
       // const calendarApi = selectInfo.view.calendar
       // console.log(calendarApi)
       // console.log(newItem)
@@ -58,6 +59,8 @@ export const useScheduleStore = defineStore('scheduleStore', {
             headers: { 'Content-type': 'application/json' }
           })
           if (response.status === 200) {
+            // terpaksa pakai fetchItemsSchedule karena this.schedule.push ke local data response.data.data tidak memiliki data dri relasi table field driverName
+            this.fetchItemsSchedule()
             this.schedule.push(response.data.data)
             Swal.fire({
               title: 'Success!',
@@ -231,10 +234,13 @@ export const useScheduleStore = defineStore('scheduleStore', {
               confirmButtonText: 'Okay',
               timer: 1500
             })
-            console.log('Events:', this.schedule)
-            console.log('No item:', idItem)
+            // console.log('Events:', this.schedule)
+            // console.log('No item:', idItem)
+
+            // terpaksa pakai fetchItemsSchedule karena this.schedule.push ke local data response.data.data tidak memiliki data dri relasi table field driverName
+            this.fetchItemsSchedule()
             const index = this.schedule.findIndex((_event) => _event.id == idItem)
-            console.log('Index:', index)
+            // console.log('Index:', index)
 
             this.schedule.splice(index, 1, response.data.data)
             // const index = this.schedule.findIndex((schedule) => schedule.id === idItem)

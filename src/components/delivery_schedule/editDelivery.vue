@@ -1,5 +1,4 @@
 <script setup>
-import NavbarComponent from '@/components/NavbarComponent.vue'
 import { ref, onMounted } from 'vue'
 import Calendar from 'primevue/calendar'
 import useTruckStore from '@/stores/truckStore'
@@ -69,14 +68,14 @@ onMounted(async () => {
   await truckStore.fetchItems()
 
   // set default value for plat_no,tgl_berangkat,tgl_sampai
-  console.log(truckStore.truck)
+  // console.log(truckStore.truck)
   if (deliveryStore.delivery && deliveryStore.delivery.length > 0) {
     for (let delivery of deliveryStore.delivery) {
-      //   console.log(delivery)
+      // console.log(delivery)
       if (delivery.id == id) {
-        const truckPlat = truckStore.truck.filter((truck) => truck.no == delivery.plat_no)
+        const truckPlat = truckStore.truck.filter((truck) => truck.no == delivery.plat_no.no)
         // console.log(truckPlat)
-        if (delivery.plat_no == truckPlat[0].no) {
+        if (delivery.plat_no.no == truckPlat[0].no) {
           plat_no.value = truckPlat[0].plat_no
         }
         // console.log(plat_no.value)
@@ -90,10 +89,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <NavbarComponent />
-
-  <div class="container-fluid p-5">
-    <div class="row justify-content-center align-items-center">
+  <div class="container-fluid">
+    <div class="row justify-content-center align-items-center bg bg-white p-3 m-3 rounded">
+      <RouterLink
+        class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-3"
+        :to="{ name: 'deliverySchedule' }"
+        ><span class="ms-3 fs-5">Back</span></RouterLink
+      >
       <div class="col-md-6">
         <div class="mb-4 d-flex flex-column justify-content-center align-items-center">
           <h4 class="mb-5 text-center">Edit DELIVERY SCHEDULES</h4>

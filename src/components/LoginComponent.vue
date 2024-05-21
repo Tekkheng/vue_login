@@ -1,7 +1,7 @@
 <script setup>
 // import axios from 'axios'
 import imageSrc from '@/assets/pt_rimba.png'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
 import useAuthStore from '@/stores/authStore'
 import useTesStore from '@/stores/counter'
 // import { useRouter } from 'vue-router'
@@ -9,6 +9,12 @@ import Swal from 'sweetalert2'
 // import userDetails from './userDetails.vue'
 // import addUser from './addUser.vue'
 // const router = useRouter()
+
+let isPasswordVisible = ref(false)
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+  console.log(isPasswordVisible.value)
+}
 
 const handleInput = reactive({
   email: '',
@@ -67,51 +73,87 @@ const showInput = async () => {
       class="card mt-5 p-5 border border-gray p-5 rounded-2 shadow d-flex justify-content-center align-items-center"
       style="width: 350px"
     >
-      <div
+      <span
         v-if="handleInput.msg_err.length > 0"
-        class="alert alert-danger text-center"
+        class="alert alert-danger text-center position-absolute"
+        style="bottom: 23rem"
         v-html="handleInput.msg_err"
-      ></div>
-      <div class="d-flex flex-row">
+      ></span>
+      <div class="d-flex flex-row mt-5 mb-2">
         <h1 class="fs-5 fw-bold text-center">Form Login</h1>
         <img :src="imageSrc" class="mb-4" alt="" width="40" style="border: 0px solid transparent" />
       </div>
-
-      <div class="mb-4">
-        <label for="email" class="form-label">Email: </label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          class="form-control"
-          placeholder="isi Email"
-          v-model="handleInput.email"
-          required
-          :class="[handleInput.msg_email.length > 0 ? 'is-invalid' : '']"
-        />
+      <!-- <div class="mb-4">
+        <IconField iconPosition="left">
+          <InputIcon class="pi pi-envelope"> </InputIcon>
+          <InputText
+            type="email"
+            id="email"
+            name="email"
+            class="form-control input-login"
+            placeholder="isi Email"
+            v-model="handleInput.email"
+            required
+            :class="[handleInput.msg_email.length > 0 ? 'is-invalid' : '']"
+          />
+        </IconField>
         <div
           v-if="handleInput.msg_email.length > 0"
           class="invalid-feedback"
           v-html="handleInput.msg_email"
         ></div>
-      </div>
+      </div> -->
+
       <div class="mb-4">
+        <label for="email" class="form-label">Email: </label>
+        <span class="icon-email">
+          <i class="pi pi-envelope"></i>
+        </span>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          class="form-control input-login"
+          placeholder="isi Email"
+          v-model="handleInput.email"
+          required
+          :class="[handleInput.msg_email.length > 0 ? 'is-invalid form-control' : 'form-control']"
+        />
+        <span
+          v-if="handleInput.msg_email.length > 0"
+          class="invalid-feedback position-absolute"
+          v-html="handleInput.msg_email"
+        ></span>
+      </div>
+      <div class="mb-5 mt-2">
         <label for="password" class="form-label">Password: </label>
         <input
-          type="password"
+          :type="isPasswordVisible ? 'text' : 'password'"
           id="password"
           name="password"
-          class="form-control"
+          class="form-control input-login"
           placeholder="isi Password"
           v-model="handleInput.password"
           required
-          :class="[handleInput.msg_password.length > 0 ? 'is-invalid' : '']"
+          :class="[
+            handleInput.msg_password.length > 0 ? 'is-invalid form-control' : 'form-control'
+          ]"
         />
-        <div
+        <span class="logoKey">
+          <i class="pi pi-key"></i>
+        </span>
+        <span class="password-toggle">
+          <i
+            @click="togglePasswordVisibility"
+            :class="isPasswordVisible ? 'pi pi-eye-slash' : 'pi pi-eye'"
+            id="togglePassword"
+          ></i>
+        </span>
+        <span
           v-if="handleInput.msg_password.length > 0"
-          class="invalid-feedback"
+          class="invalid-feedback position-absolute"
           v-html="handleInput.msg_password"
-        ></div>
+        ></span>
       </div>
       <button
         :disabled="!handleInput.email && !handleInput.password"
@@ -275,3 +317,45 @@ export default {
   </form>
 </template> -->
 </template>
+
+<style>
+/* Styling for password toggle icon */
+.password-toggle {
+  position: absolute;
+  top: 20.4rem;
+  right: 5.5rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+}
+
+.logoKey {
+  position: absolute;
+  top: 20.4rem;
+  left: 5.5rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+}
+
+.icon-email {
+  position: absolute;
+  top: 14.1rem;
+  left: 5.5rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #999;
+}
+
+.input-login {
+  /* background-color: red; */
+  padding-left: 2rem;
+  padding-right: -5rem;
+  width: 15rem;
+}
+
+/* Styling for icon when password is visible */
+.password-toggle.active i {
+  color: #007bff; /* Change color as needed */
+}
+</style>
