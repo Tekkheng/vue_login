@@ -91,12 +91,13 @@ const isOutsideClicked = (event) => {
 
 <template>
   <div class="layout-topbar">
-    <router-link to="/" class="layout-topbar-logo">
-      <!-- <img :src="logoUrl" alt="logo" /> -->
-      <a class="navbar-brand text-success fw-bold flex-grow-1 text-center" href="#"
-        ><span class="fs-2">R</span>imba
-      </a>
-    </router-link>
+    <RouterLink
+      :to="{ name: 'dashboard' }"
+      class="layout-topbar-logo navbar-brand text-success fw-bold flex-grow-0 text-center"
+    >
+      <img src="../assets/akheng-brand.png" width="220px" style="height: 120px" alt="akheng" />
+      <!-- <span class="fs-2">R</span>imba -->
+    </RouterLink>
 
     <button class="p-link layout-menu-button layout-topbar-button" @click="onMenuToggle()">
       <i class="pi pi-bars"></i>
@@ -128,13 +129,12 @@ const isOutsideClicked = (event) => {
         <span v-if="userData === null">Load</span>
       </button>
     </button>
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-      <li>
-        <button class="dropdown-item" @click.prevent="Logout()">
-          <span class="pe-1"><i class="pi pi-sign-out"></i> </span>Logout
-        </button>
-      </li>
-    </ul>
+
+    <li class="dropdown-menu text-center" aria-labelledby="dropdownMenuButton1">
+      <button class="dropdown-item" @click.prevent="Logout()">
+        <span class="pe-2"><i class="pi pi-sign-out"></i> </span>Logout
+      </button>
+    </li>
   </div>
 </template>
 

@@ -19,9 +19,10 @@ const useAuthStore = defineStore('authStore', {
   actions: {
     async fetchUser() {
       try {
-        const response = await axios.get('profile', {
-          headers: { Authorization: `Bearer ${JSON.parse(atob(localStorage.getItem('user')))}` }
-        })
+        // const response = await axios.get('profile', {
+        //   headers: { Authorization: `Bearer ${JSON.parse(atob(localStorage.getItem('user')))}` }
+        // })
+        const response = await axios.get('profile')
         // console.log(response)
         if (response.status === 200) {
           this.userLoggedin = response.data.data
@@ -40,7 +41,11 @@ const useAuthStore = defineStore('authStore', {
         const response = await axios.post('login', user)
         console.log(response)
         if (response.data.status === 200) {
-          localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
+          // manual enkripsi data pakai btoa()
+          // localStorage.setItem('user', btoa(JSON.stringify(response.data.token)))
+
+          // tidak perlu enkripsi karna dibackend sudah pakai jwt yg otomatis enkripsi
+          localStorage.setItem('user', response.data.token)
           setTimeout(() => {
             router.push('/dashboard')
           }, 2000)
@@ -54,9 +59,10 @@ const useAuthStore = defineStore('authStore', {
     },
     async Logout() {
       try {
-        const response = await axios.delete('logout', {
-          headers: { Authorization: `Bearer ${JSON.parse(atob(localStorage.getItem('user')))}` }
-        })
+        // const response = await axios.delete('logout', {
+        //   headers: { Authorization: `Bearer ${JSON.parse(atob(localStorage.getItem('user')))}` }
+        // })
+        const response = await axios.delete('logout')
         console.log('proses logout', response)
         if (response.status === 200) {
           localStorage.removeItem('user')

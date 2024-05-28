@@ -234,11 +234,11 @@ onMounted(async () => {
       <div class="col-md-12">
         <div class="card text-center">
           <div class="card-header d-flex">
-            <h4>DATA TRUCK</h4>
+            <h4 class="text-success">DATA TRUCK</h4>
             <!-- <span style="display: inline-block; transform: scaleX(-1)">🚚</span> -->
             <button
               type="button"
-              class="btn btn-outline-primary ms-auto"
+              class="btn btn-outline-success ms-auto"
               data-bs-toggle="modal"
               data-bs-target="#exampleModal"
               data-bs-whatever="@mdo"
@@ -256,20 +256,31 @@ onMounted(async () => {
             showGridlines
             tableStyle="min-width: 50rem"
           >
-            <TableColumn field="no" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="no"
+              header="No"
+              bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            ></TableColumn>
             <TableColumn
               field="plat_no"
               header="Plat No"
               bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <TableColumn
               field="truck_type.tipe_truck"
               header="Tipe Truck"
               bodyStyle="overflow: visible;"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <!-- <TableColumn field="no" header="No" style="width: 25%"></TableColumn> -->
 
-            <TableColumn bodyStyle="overflow: visible" header="Action">
+            <TableColumn
+              bodyStyle="overflow: visible"
+              header="Action"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            >
               <template #body="truckValue">
                 <button
                   type="button"

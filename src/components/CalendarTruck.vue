@@ -288,6 +288,7 @@ b {
 .fc-col-header-cell-cushion {
   color: black;
   text-decoration: none;
+  font-weight: normal;
 }
 
 /* list edit */

@@ -2,17 +2,37 @@
 import useAuthStore from '@/stores/authStore'
 import { computed, onMounted } from 'vue'
 
+// tammpil pesan login succes pakai toast primevue
+// import { useToast } from 'primevue/usetoast'
+// import Toast from 'primevue/toast'
+// const toast = useToast()
+
 const authStore = useAuthStore()
 const userData = computed(() => authStore.userLoggedin)
-console.log('userData', userData.value.nama)
+// console.log('userData', userData.value.nama)
 
+// const successShown = ref(true)
 onMounted(() => {
   authStore.fetchUser()
+  // if (successShown.value) {
+  //   successShown.value = false
+  //   showSuccess()
+  // }
 })
+
+// const showSuccess = () => {
+//   toast.add({
+//     severity: 'success',
+//     summary: 'Success Login',
+//     detail: 'Welcome',
+//     life: 3000
+//   })
+// }
 </script>
 
 <template>
   <!-- <Navbar :user="$attrs.user" /> -->
+  <!-- <Toast style="margin-top: 5rem" /> -->
   <div class="d-flex container justify-content-center align-items-center" style="height: 60vh">
     <h4 class="text-center">Welcomes to Dashboard, {{ userData.nama }}</h4>
   </div>

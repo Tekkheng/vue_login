@@ -64,9 +64,9 @@ onMounted(async () => {
       <div class="col-md-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
-            <h4>Drivers Data</h4>
+            <h4 class="text-success">Drivers Data</h4>
             <RouterLink :to="{ name: 'addDriver' }" class="nav-link">
-              <button class="btn btn-outline-primary">
+              <button class="btn btn-outline-success">
                 <i class="pi pi-plus p-2 fw-bold"></i>Add Driver
               </button>
             </RouterLink>
@@ -80,19 +80,30 @@ onMounted(async () => {
             showGridlines
             tableStyle="min-width: 50rem"
           >
-            <TableColumn field="id" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="id"
+              header="No"
+              bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            ></TableColumn>
             <TableColumn
               field="nama_driver"
               header="Nama Drivers"
               bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <TableColumn
               field="truck_type.tipe_truck"
               header="Tipe Truck"
               bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
 
-            <TableColumn header="IsActive" bodyStyle="overflow: visible;">
+            <TableColumn
+              header="IsActive"
+              bodyStyle="overflow: visible;"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            >
               <template #body="{ data }">
                 <span
                   class="p p-2 rounded text-light d-block w-100 text-center"
@@ -102,7 +113,12 @@ onMounted(async () => {
               </template>
             </TableColumn>
 
-            <TableColumn bodyStyle="overflow: visible" header="Action" class="d-flex">
+            <TableColumn
+              bodyStyle="overflow: visible"
+              header="Action"
+              class="d-flex"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            >
               <template #body="{ data }">
                 <RouterLink
                   :to="{ name: 'editDriver', params: { id: data.id } }"

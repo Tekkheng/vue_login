@@ -1,10 +1,15 @@
 <script setup>
 import { useScheduleStore } from '@/stores/scheduleStore'
 import { useDriverStore } from '@/stores/driverStore'
-
 import { ref, onMounted, watchEffect } from 'vue'
-// import Dialog from 'primevue/dialog'
-// const isVisible = ref(null)
+import axios from 'axios'
+import Swal from 'sweetalert2'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
+
+// khusus send mail dialog
+import Dialog from 'primevue/dialog'
+const isVisible = ref(false)
 
 const props = defineProps({
   isOpen: Boolean,
@@ -149,6 +154,48 @@ const submitHandler = () => {
   emit('clearValue')
 }
 
+const email = ref('')
+const id = ref('')
+
+const mailModal = () => {
+  closeModal()
+  isVisible.value = true
+}
+
+const sendMail = async () => {
+  // await console.log(props.eventHandler.event.id)
+  id.value = props.eventHandler.event.id
+  const data = {
+    id: id.value,
+    email: email.value
+  }
+  console.log(data)
+  try {
+    const res = await axios.post('send-email', data)
+    if (res.status == 200) {
+      Swal.fire({
+        title: 'Success!',
+        text: 'Add Data Success!',
+        icon: 'success',
+        confirmButtonText: 'Okay',
+        timer: 1500
+      })
+      id.value = ''
+      email.value = ''
+    }
+  } catch (err) {
+    console.log(err)
+    Swal.fire({
+      title: 'Failed',
+      text: err.response.data.message,
+      icon: 'error',
+      confirmButtonText: 'Okay',
+      timer: 1500
+    })
+  }
+  isVisible.value = false
+}
+
 watchEffect(async () => {
   // if (driverStore.driver.length > 0 && props.isAdd) {
   //   plat_no.value = props.truck[0].plat_no
@@ -290,10 +337,12 @@ onMounted(async () => {
               }}</span
             >
           </div>
+
           <div class="d-flex justify-content-start">
             <button @click="emit('deleteHandler')" class="btn btn-outline-primary me-2">
               Delete
             </button>
+            <button @click="mailModal" class="btn btn-outline-primary me-2">Send Email</button>
           </div>
         </div>
         <br />
@@ -349,6 +398,31 @@ onMounted(async () => {
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="card flex justify-content-center">
+    <Dialog v-model:visible="isVisible" modal header="Input Email" :style="{ width: '25rem' }">
+      <span class="p-text-secondary block mb-5">Isi Alamat Email yang di Tuju!.</span>
+      <div class="flex align-items-center gap-3 mb-5 mt-3">
+        <label for="email" class="font-semibold w-6rem me-2">Email</label>
+        <InputText
+          id="email"
+          class="flex-auto"
+          autocomplete="off"
+          v-model="email"
+          placeholder="Isi Email"
+        />
+      </div>
+      <div class="flex justify-content-end gap-2">
+        <Button
+          type="button"
+          label="Cancel"
+          severity="secondary"
+          @click="isVisible = false"
+        ></Button>
+        <Button type="button" label="Send" @click="sendMail"></Button>
+      </div>
+    </Dialog>
   </div>
 </template>
 

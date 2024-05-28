@@ -3,14 +3,16 @@
 import imageSrc from '@/assets/pt_rimba.png'
 import { reactive, ref } from 'vue'
 import useAuthStore from '@/stores/authStore'
-import useTesStore from '@/stores/counter'
+// import useTesStore from '@/stores/counter'
 // import { useRouter } from 'vue-router'
+import InlineMessage from 'primevue/inlinemessage'
 import Swal from 'sweetalert2'
 // import userDetails from './userDetails.vue'
 // import addUser from './addUser.vue'
 // const router = useRouter()
 
 let isPasswordVisible = ref(false)
+let isLoading = ref(false)
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value
   console.log(isPasswordVisible.value)
@@ -25,18 +27,21 @@ const handleInput = reactive({
 })
 
 const authStore = useAuthStore()
-const tesStore = useTesStore()
-console.log(tesStore.usersLog)
+// const tesStore = useTesStore()
+// console.log(tesStore.usersLog)
 
 const showInput = async () => {
+  isLoading.value = true
   const { email, password } = handleInput
   if (!email) {
     handleInput.msg_email = 'Email tidak boleh kosong!'
     handleInput.msg_err = ''
+    isLoading.value = false
     return
   } else if (!password) {
     handleInput.msg_password = 'kata sandi tidak boleh kosong!'
     handleInput.msg_err = ''
+    isLoading.value = false
     return
   }
   const data = {
@@ -49,6 +54,7 @@ const showInput = async () => {
     handleInput.msg_err = error
     handleInput.msg_email = ''
     handleInput.msg_password = ''
+    isLoading.value = false
   } else {
     Swal.fire({
       icon: 'success',
@@ -56,6 +62,7 @@ const showInput = async () => {
       text: 'Anda telah berhasil login!',
       timer: 1500
     })
+    isLoading.value = false
     Object.assign(handleInput, {
       password: '',
       email: '',
@@ -73,12 +80,19 @@ const showInput = async () => {
       class="card mt-5 p-5 border border-gray p-5 rounded-2 shadow d-flex justify-content-center align-items-center"
       style="width: 350px"
     >
-      <span
+      <!-- <span
         v-if="handleInput.msg_err.length > 0"
         class="alert alert-danger text-center position-absolute"
-        style="bottom: 23rem"
+        style="bottom: 25.3rem"
         v-html="handleInput.msg_err"
-      ></span>
+      ></span> -->
+      <InlineMessage
+        severity="error"
+        class="position-absolute"
+        style="bottom: 27rem"
+        v-if="handleInput.msg_err.length > 0"
+        >{{ handleInput.msg_err }}</InlineMessage
+      >
       <div class="d-flex flex-row mt-5 mb-2">
         <h1 class="fs-5 fw-bold text-center">Form Login</h1>
         <img :src="imageSrc" class="mb-4" alt="" width="40" style="border: 0px solid transparent" />
@@ -156,7 +170,7 @@ const showInput = async () => {
         ></span>
       </div>
       <button
-        :disabled="!handleInput.email && !handleInput.password"
+        :disabled="(!handleInput.email && !handleInput.password) || isLoading"
         class="btn btn-success text-light btn-block w-100 mt-3"
         type="submit"
         @click.prevent="showInput()"

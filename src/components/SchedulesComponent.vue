@@ -4,6 +4,22 @@ import axios from 'axios'
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 
+// const email = ref('')
+// const id = ref('')
+
+// const tesEmail = async () => {
+//   try {
+//     const response = await axios.post('/send-email', {
+//       email: email.value,
+//       id: id.value
+//     })
+//     alert(response.data.message)
+//   } catch (error) {
+//     console.error(error)
+//     alert('Failed to send email')
+//   }
+// }
+
 // import print from 'vue3-print-nb'
 
 // {
@@ -72,9 +88,9 @@ onMounted(async () => {
       <div class="col-md-12">
         <div class="card">
           <div class="card-header d-flex justify-content-between">
-            <h4>TRUCK SCHEDULES</h4>
+            <h4 class="text-success">TRUCK SCHEDULES</h4>
             <RouterLink :to="{ name: 'add_schedules' }" class="nav-link">
-              <button class="btn btn-outline-primary ms-2">
+              <button class="btn btn-outline-success ms-2">
                 <i class="pi pi-plus p-2 fw-bold"></i>Add Data
               </button>
             </RouterLink>
@@ -86,37 +102,53 @@ onMounted(async () => {
             :rowsPerPageOptions="[5, 10, 20, 50]"
             stripedRows
             showGridlines
-            tableStyle="min-width: 50rem"
+            tableStyle="min-width: 50rem;"
           >
-            <TableColumn field="id" header="No" bodyStyle="overflow: visible"></TableColumn>
+            <TableColumn
+              field="id"
+              header="No"
+              bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            ></TableColumn>
             <TableColumn
               field="driver_name.nama_driver"
               header="Nama Driver"
               bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+              head
             ></TableColumn>
             <TableColumn
               field="plat_no"
               header="Plat No"
               bodyStyle="overflow: visible"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <TableColumn
               field="truck_type.tipe_truck"
               header="Tipe Truck"
               bodyStyle="overflow: visible;"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <TableColumn
               field="tgl_berangkat"
               header="Tanggal Berangkat"
               bodyStyle="overflow: visible;"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <TableColumn
               field="tgl_sampai"
               header="Tanggal Sampai"
               bodyStyle="overflow: visible;"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
             ></TableColumn>
             <!-- <TableColumn field="no" header="No" style="width: 25%"></TableColumn> -->
 
-            <TableColumn bodyStyle="overflow: visible" header="Action" class="d-flex">
+            <TableColumn
+              bodyStyle="overflow: visible"
+              header="Action"
+              class="d-flex"
+              :headerStyle="{ backgroundColor: 'lightgreen', color: 'white' }"
+            >
               <template #body="scheduleValue">
                 <RouterLink
                   :to="{ name: 'edit_schedules', params: { id: scheduleValue.data.id } }"
@@ -207,6 +239,11 @@ onMounted(async () => {
       </div>
     </div>
   </div>
+  <!-- <div>
+    <input v-model="email" type="email" placeholder="Enter email" />
+    <input v-model="id" type="number" placeholder="Enter Schedule ID" />
+    <button @click="tesEmail">Send Email</button>
+  </div> -->
 </template>
 
 <!-- <style>
