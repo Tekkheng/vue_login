@@ -24,5 +24,5 @@ const handleSubmit = () => {
     <button class="btn btn-danger" type="submit">add</button>
   </form>
 </template>
-// hai
+
 <style lang="scss" scoped></style>
