@@ -21,17 +21,20 @@ import './axios'
 import DataTable from 'primevue/datatable'
 import TableColumn from 'primevue/column'
 
-// import ToastService from 'primevue/toastservice'
+import ToastService from 'primevue/toastservice'
 
 // import ColumnGroup from 'primevue/columngroup' // optional
 // import Row from 'primevue/row'
 
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
 const app = createApp(App)
 
 app.use(PrimeVue)
 app.use(createPinia())
 app.use(router)
-// app.use(ToastService)
+app.use(ElementPlus)
+app.use(ToastService)
 
 // Register PrimeVue components globally
 app.component('DataTable', DataTable)

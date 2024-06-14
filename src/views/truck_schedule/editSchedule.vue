@@ -125,11 +125,8 @@ onMounted(async () => {
 <template>
   <div class="container-fluid">
     <div class="row justify-content-center align-items-center bg bg-white p-3 m-3 rounded">
-      <RouterLink
-        class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-3"
-        :to="{ name: 'schedules' }"
-        ><span class="ms-3 fs-5">Back</span></RouterLink
-      >
+      <RouterLink class="pi pi-arrow-left text-decoration-none text-dark fw-bold me-3" :to="{ name: 'schedules' }"><span
+          class="ms-3 fs-5">Back</span></RouterLink>
       <div class="col-md-6">
         <div class="mb-4 d-flex flex-column justify-content-center align-items-center">
           <h4 class="mb-5 text-center mt-5">Edit TRUCK SCHEDULES</h4>
@@ -137,12 +134,7 @@ onMounted(async () => {
             <div class="mb-4 row">
               <label for="nama_driver" class="col-sm-2 col-form-label">Nama Driver</label>
               <div class="col-sm-8">
-                <select
-                  class="form-select"
-                  id="nama_driver"
-                  v-model="nama_driver"
-                  @change="saveSelectedNamaDriver"
-                >
+                <select class="form-select" id="nama_driver" v-model="nama_driver" @change="saveSelectedNamaDriver">
                   <option v-for="(item, index) in driverStore.driver" :key="index">
                     {{ item.nama_driver }}
                   </option>
@@ -152,12 +144,7 @@ onMounted(async () => {
             <div class="mb-4 row">
               <label for="plat_no" class="col-sm-2 col-form-label">Plat No</label>
               <div class="col-sm-8">
-                <select
-                  class="form-select"
-                  id="plat_no"
-                  v-model="plat_no"
-                  @change="saveSelectedPlatNo"
-                >
+                <select class="form-select" id="plat_no" v-model="plat_no" @change="saveSelectedPlatNo">
                   <option v-for="(item, index) in truckStore.truck" :key="index">
                     {{ item.plat_no }}
                   </option>
@@ -167,39 +154,20 @@ onMounted(async () => {
             <div class="mb-3 row">
               <div class="col-sm-2 form-label">Tipe Truck</div>
               <div class="col-sm-8">
-                <input
-                  type="text"
-                  placeholder="Tipe Truck"
-                  v-model="tipe_truck"
-                  class="form-control"
-                  disabled
-                />
+                <input type="text" placeholder="Tipe Truck" v-model="tipe_truck" class="form-control" disabled />
               </div>
             </div>
             <div class="mb-3 row">
-              <label for="tgl_berangkat" class="col-sm-2 col-form-label pe-5"
-                >Tanggal Berangkat</label
-              >
+              <label for="tgl_berangkat" class="col-sm-2 col-form-label pe-5">Tanggal Berangkat</label>
               <div class="col-sm-10">
-                <Calendar
-                  v-model="tgl_berangkat"
-                  showIcon
-                  :showOnFocus="true"
-                  id="tgl_berangkat"
-                  dateFormat="yy-mm-dd"
-                />
+                <Calendar v-model="tgl_berangkat" showIcon :showOnFocus="true" id="tgl_berangkat"
+                  dateFormat="yy-mm-dd" />
               </div>
             </div>
             <div class="mb-3 row">
               <label for="tgl_sampai" class="col-sm-2 col-form-label">Tanggal Sampai</label>
               <div class="col-sm-10">
-                <Calendar
-                  v-model="tgl_sampai"
-                  showIcon
-                  :showOnFocus="true"
-                  id="tgl_sampai"
-                  dateFormat="yy-mm-dd"
-                />
+                <Calendar v-model="tgl_sampai" showIcon :showOnFocus="true" id="tgl_sampai" dateFormat="yy-mm-dd" />
               </div>
             </div>
             <div class="mb-3 row">

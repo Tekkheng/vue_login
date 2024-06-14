@@ -156,7 +156,7 @@ const showInput = async () => {
         <span class="logoKey">
           <i class="pi pi-key"></i>
         </span>
-        <span class="password-toggle">
+        <span class="password-toggle" v-show="handleInput.msg_password === ''">
           <i
             @click="togglePasswordVisibility"
             :class="isPasswordVisible ? 'pi pi-eye-slash' : 'pi pi-eye'"
